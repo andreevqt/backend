@@ -3,5 +3,6 @@
 module.exports = {
   migrate: require('./migrate'),
   serve: require('./serve'),
-  seed: require('./seed')
+  seed: require('./seed'),
+  secret: require('./secret')
 };

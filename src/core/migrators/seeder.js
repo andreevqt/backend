@@ -9,8 +9,8 @@ class Seeder extends Base {
     this.setDir(path.resolve(__dirname, '../../seeders'));
   }
 
-  async seed(count) {
-    return this.knex.withUserParams({ count }).seed.run({ directory: this.dir });
+  async seed(params = {}) {
+    return this.knex.withUserParams(params).seed.run({ directory: this.dir });
   }
 }
 

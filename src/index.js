@@ -2,13 +2,13 @@
 
 const { program } = require('commander');
 const pkg = require('../package.json');
-const { serve, migrate, seed } = require('./commands');
+const { serve, migrate, seed, secret } = require('./commands');
 
 program.version(pkg.version);
 
 program
   .command('serve [port]')
-  .description('start application server')
+  .description('start api server')
   .action(serve);
 
 program.command('migrate')
@@ -18,7 +18,10 @@ program.command('migrate')
 
 program.command('seed')
   .description('run seeders')
-  .option('-c, --count <count>', 'count of entries to insert')
   .action(seed);
+
+program.command('secret')
+  .description('generate app key')
+  .action(secret);
 
 program.parse(process.argv);

@@ -6,12 +6,18 @@ module.exports = async ({ type }) => {
   const migrator = new Migrator();
   try {
     await migrator.init();
-    if (type === 'migrate') {
-      await migrator.migrate();
-    } else if (type === 'refresh') {
-      await migrator.refresh();
-    } else {
-      throw new Error('Unknown migration type');
+    switch (type) {
+      case 'migrate': {
+        await migrator.migrate();
+        return;
+      }
+      case 'refresh': {
+        await migrator.refresh();
+        return;
+      }
+      default: {
+        throw new Error('Unknown migration type');
+      }
     }
   } catch (err) {
     throw err;

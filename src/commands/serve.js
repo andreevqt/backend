@@ -2,12 +2,14 @@
 
 const express = require('express');
 const { once } = require('events');
+const cors = require('cors');
 const { Http } = require('../constants');
 const config = require('../config');
 const api = require('../api');
-const connectDB = require('../core/database');
+const bootstrap = require('../core/bootstrap');
+const { errorHandler, logRequests } = require('../core/middleware');
 
-module.exports = async (port = config.get('port')) => {
+module.exports = async (port = config.get('app.port')) => {
   const app = express();
 
   app.use(express.json());
@@ -15,14 +17,17 @@ module.exports = async (port = config.get('port')) => {
     extended: false
   }));
 
+  app.use(cors());
+  app.use(logRequests);
+
   app.use('/api', api);
 
   app.use((req, res) => res.status(Http.NOT_FOUND).send(`Not found`));
-  app.use((err, req, res, next) => res.status(Http.INTERNAL_SERVER_ERROR).send(`Internal Server Error`));
+  app.use(errorHandler);
 
-  await connectDB();
+  await bootstrap();
 
   return once(app.listen(port), `listening`)
-    .then(() => console.log(`Serving on port ${port}`))
-    .catch((err) => console.log(err.msg));
+    .then(() => console.log(`Listening on port ${port}`))
+    .catch((err) => console.log(err));
 };

@@ -2,11 +2,11 @@
 
 const { Seeder } = require('../core/migrators');
 
-module.exports = async ({ count = 100 }) => {
+module.exports = async () => {
   const seeder = new Seeder();
   try {
     await seeder.init();
-    await seeder.seed(count);
+    await seeder.seed();
   } catch (err) {
     throw err;
   } finally {

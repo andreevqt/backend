@@ -6,21 +6,33 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "version": "node ./src/index.js --version",
-    "start": "nodemon ./src/index.js serve",
+    "start": "cross-env NODE_ENV=production nodemon ./src/index.js serve",
+    "start::debug": "cross-env NODE_ENV=debug LOG_LEVEL=debug nodemon ./src/index.js serve",
     "migrate": "node ./src/index.js migrate --type=migrate",
     "migrate::refresh": "node ./src/index.js migrate --type=refresh",
-    "seed": "node ./src/index.js seed --count=100"
+    "generate::secret": "node ./src/index.js secret",
+    "seed": "node ./src/index.js seed"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "0.25.0",
+    "bcrypt": "5.0.1",
     "commander": "8.3.0",
+    "cors": "^2.8.5",
+    "cross-env": "7.0.3",
     "dotenv": "^14.3.2",
     "express": "4.17.2",
+    "express-async-handler": "1.2.0",
+    "jsonwebtoken": "8.5.1",
     "knex": "1.0.1",
     "lodash": "4.17.21",
     "mysql": "2.18.1",
-    "nodemon": "2.0.15"
+    "nodemon": "2.0.15",
+    "objection": "3.0.1",
+    "pino": "6.3.2",
+    "pino-pretty": "4.0.0",
+    "yup": "0.32.11"
   }
 }

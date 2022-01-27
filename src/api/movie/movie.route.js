@@ -9,7 +9,14 @@ module.exports = (app) => {
   app.use('/movies', router);
 
   router
-    .route('/')
-    .get(controller.list);
+    .route('/popular')
+    .get(controller.popular);
 
+  router
+    .route('/top_rated')
+    .get(controller.topRated);
+
+  router
+    .route('/upcoming')
+    .get(controller.upcoming);
 };

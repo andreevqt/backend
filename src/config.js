@@ -34,14 +34,26 @@ const getInteger = (envVar, defaultValue) => {
 };
 
 const config = {
-  port: getInteger(process.env.SERVER_PORT, 3000),
-  apiKey: getString(process.env.API_KEY),
+  debug: getBool(process.env.DEBUG, false),
+  app: {
+    port: getInteger(process.env.APP_PORT, 3000),
+    secret: getString(process.env.APP_SECRET)
+  },
   db: {
     user: getString(process.env.DB_USER),
     password: getString(process.env.DB_PASSWORD),
     database: getString(process.env.DB_DATABASE),
     host: getString(process.env.DB_HOST, 'localhost'),
     client: 'mysql'
+  },
+  theMovieDb: {
+    baseUrl: getString(process.env.MOVIE_DB_URL, 'https://api.themoviedb.org'),
+    version: getInteger(process.env.MOVIE_DB_VERSION, 3),
+    key: getString(process.env.MOVIE_DB_KEY),
+    lang: getString(process.env.MOVIE_DB_LANG, 'ru')
+  },
+  jwt: {
+    expiresIn: getString(process.env.JWT_EXPIRES_IN, '15m')
   }
 };
 
