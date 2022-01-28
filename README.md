@@ -26,4 +26,5 @@ DB_DATABASE=kino
 Переместитесь в директорию приложения:
 1. `npm install` - устанавливает зависимости 
 2. `npm run generate::secret` - генерирует secret key
-3. `npm run start::debug` или `npm run start` — запускает сервер
+3. `npm run migrate` - применят миграции
+4. `npm run start::debug` или `npm run start` — запускает сервер
