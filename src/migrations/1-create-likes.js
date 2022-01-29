@@ -5,7 +5,7 @@ module.exports.up = (knex) => {
     .createTable('likes', (table) => {
       table.increments('id');
       table.string('likeableType');
-      table.unsigned('likeableId');
+      table.integer('likeableId').unsigned();
       table.timestamps(false, true);
     });
 };
