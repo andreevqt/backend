@@ -37,7 +37,8 @@ const config = {
   debug: getBool(process.env.DEBUG, false),
   app: {
     port: getInteger(process.env.APP_PORT, 3000),
-    secret: getString(process.env.APP_SECRET)
+    secret: getString(process.env.APP_SECRET),
+    prefix: getString(process.env.API_PREFIX, '/')
   },
   db: {
     user: getString(process.env.DB_USER),

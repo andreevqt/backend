@@ -20,7 +20,7 @@ module.exports = async (port = config.get('app.port')) => {
   app.use(cors());
   app.use(logRequests);
 
-  app.use('/api', api);
+  app.use(config.get('app.prefix'), api);
 
   app.use((req, res) => res.status(Http.NOT_FOUND).send(`Not found`));
   app.use(errorHandler);
