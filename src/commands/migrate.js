@@ -20,7 +20,7 @@ module.exports = async ({ type }) => {
       }
     }
   } catch (err) {
-    throw err;
+    console.log(err.message);
   } finally {
     await migrator.destroy();
   }

@@ -19,7 +19,9 @@ class MigratorBase {
   }
 
   async destroy() {
-    await this.knex.destroy();
+    if (this.knex) {
+      await this.knex.destroy();
+    }
   }
 
   setDir(dir) {
