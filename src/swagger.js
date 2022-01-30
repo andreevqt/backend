@@ -3,7 +3,12 @@
 const pkg = require('../package.json');
 const config = require('./config');
 
-const host = `${config.get('app.url')}:${config.get('app.port')}/${config.get('app.prefix')}`.replace(/(^\w+:|^)\/\//, '');
+let host = config.get('app.url').replace(/(^\w+:|^)\/\//, '');
+// Используем обратный прокси порт не важен
+if (process.env.NODE_ENV !== 'production') {
+  host += `:${config.get('app.port')}`;
+}
+host += `/${config.get('app.prefix')}`;
 
 module.exports = {
   swagger: '2.0',
