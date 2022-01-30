@@ -33,6 +33,7 @@
     "objection": "3.0.1",
     "pino": "6.3.2",
     "pino-pretty": "4.0.0",
+    "swagger-ui-express": "4.3.0",
     "yup": "0.32.11"
   }
 }

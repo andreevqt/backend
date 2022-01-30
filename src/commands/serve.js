@@ -3,11 +3,13 @@
 const express = require('express');
 const { once } = require('events');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
 const { Http } = require('../constants');
 const config = require('../config');
 const api = require('../api');
 const bootstrap = require('../core/bootstrap');
 const { errorHandler, logRequests } = require('../core/middleware');
+const swaggerDocument = require('../swagger');
 
 module.exports = async (port = config.get('app.port')) => {
   const app = express();
@@ -20,7 +22,8 @@ module.exports = async (port = config.get('app.port')) => {
   app.use(cors());
   app.use(logRequests);
 
-  app.use(config.get('app.prefix'), api);
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  app.use(config.get('app.prefix') || '/', api);
 
   app.use((req, res) => res.status(Http.NOT_FOUND).send(`Not found`));
   app.use(errorHandler);
