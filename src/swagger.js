@@ -48,10 +48,6 @@ module.exports = {
     }
   },
 
-  schemes: [
-    'http', 'https'
-  ],
-
   paths: {
     '/movies/popular': {
       get: {
