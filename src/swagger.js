@@ -120,6 +120,8 @@ module.exports = {
           in: 'path',
           name: 'personId',
           description: 'id',
+          type: 'integer',
+          format: 'int64',
           required: true
         }],
         summary: 'Информация о человеке',
@@ -143,6 +145,8 @@ module.exports = {
           in: 'path',
           name: 'personId',
           description: 'id',
+          type: 'integer',
+          format: 'int64',
           required: true
         }],
         summary: 'Фильмы в которых принял участие',
@@ -321,6 +325,8 @@ module.exports = {
         parameters: [{
           in: 'path',
           name: 'userId',
+          type: 'integer',
+          format: 'int64',
           required: true
         }],
         responses: {
