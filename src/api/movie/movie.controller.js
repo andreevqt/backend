@@ -1,27 +1,28 @@
 'use strict';
 
+const asyncHandler = require('express-async-handler');
 const { Http } = require('../../constants');
 const service = require('./movie.service')
 
 module.exports = {
-  popular: async (req, res) => {
+  popular: asyncHandler(async (req, res) => {
     const { page } = req.query;
 
     const result = await service.popular(page);
     return res.status(Http.OK).json(result);
-  },
+  }),
 
-  topRated: async (req, res) => {
+  topRated: asyncHandler(async (req, res) => {
     const { page } = req.query;
 
     const result = await service.topRated(page);
     return res.status(Http.OK).json(result);
-  },
+  }),
 
-  upcoming: async (req, res) => {
+  upcoming: asyncHandler(async (req, res) => {
     const { page } = req.query;
-    
+
     const result = await service.upcoming(page);
     return res.status(Http.OK).json(result);
-  }
+  })
 };
