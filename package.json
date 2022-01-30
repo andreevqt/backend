@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "version": "node ./src/index.js --version",
-    "start": "cross-env NODE_ENV=production nodemon ./src/index.js serve",
+    "start": "cross-env NODE_ENV=production node ./src/index.js serve",
     "start::debug": "cross-env NODE_ENV=debug LOG_LEVEL=debug nodemon ./src/index.js serve",
     "migrate": "node ./src/index.js migrate --type=migrate",
     "migrate::refresh": "node ./src/index.js migrate --type=refresh",
