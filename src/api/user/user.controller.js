@@ -21,7 +21,7 @@ module.exports = {
 
   get: asyncHandler(async (req, res) => {
     const { user } = res.locals;
-    return res.status(Http.OK).json(user);
+    return res.status(Http.OK).json({ success: true, user });
   }),
 
   list: asyncHandler(async (req, res) => {
