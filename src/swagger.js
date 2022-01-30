@@ -4,16 +4,17 @@ const pkg = require('../package.json');
 const config = require('./config');
 
 let host = config.get('app.url').replace(/(^\w+:|^)\/\//, '');
-// Используем обратный прокси порт не важен
 if (process.env.NODE_ENV !== 'production') {
   host += `:${config.get('app.port')}`;
 }
-host += `/${config.get('app.prefix')}`;
+
+const basePath = config.get('app.prefix');
 
 module.exports = {
   swagger: '2.0',
 
   host,
+  basePath,
 
   info: {
     version: pkg.version,
@@ -38,6 +39,18 @@ module.exports = {
     name: 'Пользователи',
     description: 'Авторизация, смена пароля, обновление токенов'
   }],
+
+  securityDefinitions: {
+    BearerAuth: {
+      type: 'apiKey',
+      in: 'header',
+      name: 'Authorization'
+    }
+  },
+
+  schemes: [
+    'http', 'https'
+  ],
 
   paths: {
     '/movies/popular': {
@@ -189,8 +202,8 @@ module.exports = {
     '/users': {
       get: {
         tags: ['Пользователи'],
-        summary: 'Список',
-        description: 'Создает нового пользователя',
+        summary: 'Возвращает список пользователей',
+        operationId: 'getUsers',
         parameters: [{
           in: 'query',
           name: 'page',
@@ -223,11 +236,10 @@ module.exports = {
         },
         produces: 'application/json'
       },
-
       post: {
         tags: ['Пользователи'],
-        summary: 'Создать',
-        description: 'Создает нового пользователя',
+        summary: 'Создает нового пользователя',
+        operationId: 'createUser',
         parameters: [{
           in: 'body',
           type: 'object',
@@ -300,16 +312,71 @@ module.exports = {
       }
     },
 
-
     '/users/{userId}': {
       get: {
         tags: ['Пользователи'],
-        summary: 'Информация',
-        description: 'Подробная информация о пользователе',
+        summary: 'Ищет пользователя по ID',
+        description: 'Возвращает пользователя',
+        operationId: 'getUser',
         parameters: [{
           in: 'path',
           name: 'userId',
           required: true
+        }],
+        responses: {
+          200: {
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: true
+                },
+                user: {
+                  $ref: '#definitions/User'
+                }
+              }
+            }
+          },
+          404: {
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'User not found'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      },
+      put: {
+        tags: ['Пользователи'],
+        summary: 'Обновить пользователя',
+        operationId: 'updateUser',
+        security: [{
+          BearerAuth: []
+        }],
+        parameters: [{
+          in: 'path',
+          name: 'userId',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }, {
+          in: 'body',
+          type: 'object',
+          name: 'body',
+          required: true,
+          schema: {
+            $ref: '#definitions/UpdateUserBody'
+          }
         }],
         responses: {
           200: {
@@ -358,8 +425,7 @@ module.exports = {
             type: 'object',
             properties: {
               token: {
-                type: 'string',
-                example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQzNDk2MzAzLCJleHAiOjE2NDM0OTcyMDN9.Jqc3yPOtH4r3GKXKnYyw3BJxuN_Iq7awfdGHpwqsEs0'
+                $ref: '#definitions/Token',
               }
             }
           },
@@ -418,8 +484,7 @@ module.exports = {
     '/users/login': {
       post: {
         tags: ['Пользователи'],
-        summary: 'Логин',
-        description: 'Логин пользователя',
+        summary: 'Аутентификация пользователя',
         parameters: [{
           in: 'body',
           name: 'body',
@@ -477,6 +542,75 @@ module.exports = {
           }
         },
         produces: 'application/json'
+      },
+
+    },
+
+    '/users/logout': {
+      post: {
+        tags: ['Пользователи'],
+        summary: 'Выход из системы',
+        parameters: [{
+          in: 'body',
+          name: 'body',
+          schema: {
+            type: 'object',
+            properties: {
+              token: {
+                $ref: '#definitions/Token',
+              }
+            }
+          },
+          required: true
+        }],
+        responses: {
+          200: {
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: true
+                },
+                message: {
+                  type: 'string',
+                  example: 'Logout is successful'
+                }
+              }
+            }
+          },
+          400: {
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Token is missing'
+                }
+              }
+            }
+          },
+          404: {
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'User not found'
+                }
+              }
+            }
+          },
+        },
+        produces: 'application/json'
       }
     }
   },
@@ -505,11 +639,17 @@ module.exports = {
       example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQzNDk2MzAzLCJleHAiOjE2NDM0OTcyMDN9.Jqc3yPOtH4r3GKXKnYyw3BJxuN_Iq7awfdGHpwqsEs0'
     },
 
+    AccessToken: {
+      type: 'string',
+      example: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQzNDk2MzAzLCJleHAiOjE2NDM0OTcyMDN9.Jqc3yPOtH4r3GKXKnYyw3BJxuN_Iq7awfdGHpwqsEs0'
+    },
+
     Tokens: {
       type: 'object',
       properties: {
         access: {
-          $ref: '#definitions/Token'
+          type: 'string',
+          $ref: '#definitions/AccessToken'
         },
         refresh: {
           $ref: '#definitions/Token'
@@ -532,6 +672,27 @@ module.exports = {
         },
         password: {
           required: true,
+          type: 'string',
+          example: '12354'
+        }
+      }
+    },
+
+    UpdateUserBody: {
+      type: 'object',
+      properties: {
+        name: {
+          required: false,
+          type: 'string',
+          example: 'John Doe'
+        },
+        email: {
+          required: false,
+          type: 'string',
+          example: 'example@mail.com'
+        },
+        password: {
+          required: false,
           type: 'string',
           example: '12354'
         }
