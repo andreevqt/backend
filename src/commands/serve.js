@@ -4,6 +4,7 @@ const express = require('express');
 const { once } = require('events');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
+const chalk = require('chalk');
 const { Http } = require('../constants');
 const config = require('../config');
 const api = require('../api');
@@ -31,6 +32,6 @@ module.exports = async (port = config.get('app.port')) => {
   await bootstrap();
 
   return once(app.listen(port), `listening`)
-    .then(() => console.log(`Listening on port ${port}`))
-    .catch((err) => console.log(err));
+    .then(() => console.log(chalk.green(`Listening on port ${port}`)))
+    .catch((err) => console.log(chalk.green(err)));
 };

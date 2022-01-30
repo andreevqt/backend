@@ -1,5 +1,6 @@
 'use strict';
 
+const chalk = require('chalk');
 const { Migrator } = require('../core/migrators');
 
 module.exports = async ({ type }) => {
@@ -20,7 +21,7 @@ module.exports = async ({ type }) => {
       }
     }
   } catch (err) {
-    console.log(err.message);
+    console.log(chalk.red(err.message));
   } finally {
     await migrator.destroy();
   }
