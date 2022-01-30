@@ -191,6 +191,17 @@ module.exports = {
         tags: ['Пользователи'],
         summary: 'Список',
         description: 'Создает нового пользователя',
+        parameters: [{
+          in: 'query',
+          name: 'page',
+          description: 'Номер страницы',
+          required: false
+        }, {
+          in: 'query',
+          name: 'perPage',
+          description: 'Записей на странице',
+          required: false
+        }],
         responses: {
           201: {
             schema: {
@@ -202,11 +213,7 @@ module.exports = {
                     $ref: '#definitions/User'
                   }
                 },
-                page: {
-                  type: 'integer',
-                  example: 1
-                },
-                perPage: {
+                total: {
                   type: 'integer',
                   example: 15
                 }
@@ -225,7 +232,7 @@ module.exports = {
           in: 'body',
           type: 'object',
           name: 'body',
-          required: false,
+          required: true,
           schema: {
             $ref: '#definitions/CreateUserBody'
           }
@@ -233,7 +240,25 @@ module.exports = {
         responses: {
           201: {
             schema: {
-              $ref: '#definitions/CreateUserResponse'
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: true
+                },
+                user: {
+                  allOf: [{
+                    $ref: '#definitions/User'
+                  }, {
+                    type: 'object',
+                    properties: {
+                      tokens: {
+                        $ref: '#definitions/Tokens'
+                      }
+                    }
+                  }]
+                }
+              }
             }
           },
 
@@ -279,8 +304,8 @@ module.exports = {
     '/users/{userId}': {
       get: {
         tags: ['Пользователи'],
-        summary: 'Инфо',
-        description: 'Информация о пользователе',
+        summary: 'Информация',
+        description: 'Подробная информация о пользователе',
         parameters: [{
           in: 'path',
           name: 'userId',
@@ -324,7 +349,7 @@ module.exports = {
     '/users/token': {
       post: {
         tags: ['Пользователи'],
-        summary: 'refreshToken/accessToken',
+        summary: 'Получить access/refresh токены',
         description: 'Возвращает пару access/refresh токенов',
         parameters: [{
           in: 'body',
@@ -388,6 +413,71 @@ module.exports = {
         },
         produces: 'application/json'
       }
+    },
+
+    '/users/login': {
+      post: {
+        tags: ['Пользователи'],
+        summary: 'Логин',
+        description: 'Логин пользователя',
+        parameters: [{
+          in: 'body',
+          name: 'body',
+          type: 'object',
+          required: true,
+          properties: {
+            email: {
+              type: 'string',
+              example: 'example@mail.com'
+            },
+            password: {
+              type: 'string',
+              example: '12345'
+            }
+          }
+        }],
+        responses: {
+          200: {
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: true
+                },
+                user: {
+                  allOf: [{
+                    $ref: '#definitions/User'
+                  }, {
+                    type: 'object',
+                    properties: {
+                      tokens: {
+                        $ref: '#definitions/Tokens'
+                      }
+                    }
+                  }]
+                }
+              }
+            }
+          },
+          401: {
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Wrong credentials'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      }
     }
   },
 
@@ -410,46 +500,19 @@ module.exports = {
       }
     },
 
+    Token: {
+      type: 'string',
+      example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQzNDk2MzAzLCJleHAiOjE2NDM0OTcyMDN9.Jqc3yPOtH4r3GKXKnYyw3BJxuN_Iq7awfdGHpwqsEs0'
+    },
+
     Tokens: {
       type: 'object',
       properties: {
         access: {
-          type: 'string',
-          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQzNDk2MzAzLCJleHAiOjE2NDM0OTcyMDN9.Jqc3yPOtH4r3GKXKnYyw3BJxuN_Iq7awfdGHpwqsEs0'
+          $ref: '#definitions/Token'
         },
         refresh: {
-          type: 'string',
-          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjQzNDk2MzAzfQ.LrYEG03CHLLIYz2o7tEJqxrGIvHSVf41Xvsza6FQ9uY'
-        }
-      }
-    },
-
-    CreateUserResponse: {
-      type: 'object',
-      properties: {
-        success: {
-          type: 'boolean',
-          example: true
-        },
-        user: {
-          type: 'object',
-          properties: {
-            name: {
-              type: 'string',
-              example: 'John Doe'
-            },
-            email: {
-              type: 'string',
-              example: 'example@mail.com'
-            },
-            password: {
-              type: 'string',
-              example: 'example@mail.com'
-            },
-            tokens: {
-              $ref: '#definitions/Tokens'
-            }
-          }
+          $ref: '#definitions/Token'
         }
       }
     },
