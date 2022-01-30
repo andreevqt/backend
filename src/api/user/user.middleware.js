@@ -1,7 +1,7 @@
 'use strict';
 
 const { Http } = require('../../constants');
-const jwt = require('../../core/jwt/jwt.service');
+const jwt = require('./jwt/jwt.service');
 const service = require('./user.service');
 const asyncHandler = require('express-async-handler');
 

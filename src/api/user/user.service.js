@@ -2,7 +2,7 @@
 
 const { UniqueViolationError } = require('objection');
 const repository = require('./user.repository');
-const jwt = require('../../core/jwt/jwt.service');
+const jwt = require('./jwt/jwt.service');
 const { Http } = require('../../constants');
 const crypto = require('../../core/crypto');
 
