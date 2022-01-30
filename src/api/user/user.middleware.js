@@ -5,7 +5,7 @@ const jwt = require('./jwt/jwt.service');
 const service = require('./user.service');
 const asyncHandler = require('express-async-handler');
 
-module.exports.authorize = asyncHandler((req, res, next) => {
+module.exports.authorize = asyncHandler(async (req, res, next) => {
   const header = req.headers['authorization'] || '';
   const authorization = header.split(' ')[1];
   if (!authorization) {
@@ -26,3 +26,12 @@ module.exports.authorize = asyncHandler((req, res, next) => {
     return res.status(Http.FORBIDDEN).json({ success: false, message: 'Forbidden' });
   }
 });
+
+module.exports.isCurrentUser = (req, res, next) => {
+  const { user, currentUser } = res.locals;
+  if (currentUser.id !== user.id) {
+    return res.status(Http.FORBIDDEN).json({ success: false, message: 'Forbidden' });
+  }
+
+  next();
+};

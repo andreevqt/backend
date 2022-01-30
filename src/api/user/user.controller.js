@@ -42,6 +42,14 @@ module.exports = {
     }
   }),
 
+  update: asyncHandler(async (req, res) => {
+    const { user } = res.locals;
+    const attrs = req.body;
+
+    const updated = await service.update(user.id, attrs);
+    res.status(Http.OK).json({ success: true, user: updated });
+  }),
+
   token: asyncHandler(async (req, res) => {
     const { token } = req.body;
 
@@ -64,5 +72,19 @@ module.exports = {
     }
 
     res.status(Http.OK).json({ success: true, user });
+  }),
+
+  logout: asyncHandler(async (req, res) => {
+    const { token } = req.body;
+    if (!token) {
+      return res.sendStatus(Http.BAD_REQUEST).json({ success: false, message: 'Token is missing' });
+    }
+
+    const result = await service.logout(token);
+    if (!result) {
+      return res.status(Http.BAD_REQUEST).send({ success: false, message: 'Wrong token' })
+    };
+
+    return res.status(Http.OK).send({ success: true, message: 'Logout is successful' });
   })
 };

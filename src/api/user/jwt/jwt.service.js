@@ -26,7 +26,8 @@ module.exports.generateAccess = (data) => {
   }
 
   const expiresIn = config.get('jwt.expiresIn');
-  return jwt.sign(data, secret, { expiresIn });
+  const token = jwt.sign(data, secret, { expiresIn });
+  return `Bearer ${token}`;
 };
 
 module.exports.verify = (token) => {

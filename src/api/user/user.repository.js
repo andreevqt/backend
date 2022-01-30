@@ -18,3 +18,7 @@ module.exports.create = (attrs) => {
   return User.query().insert(attrs);
 };
 
+module.exports.update = (id, attrs) => {
+  return User.query().patchAndFetchById(id, attrs);
+}
+

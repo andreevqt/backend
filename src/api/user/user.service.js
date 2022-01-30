@@ -20,6 +20,14 @@ module.exports.create = async (attrs) => {
   return { ...user.toJSON(), tokens };
 };
 
+module.exports.update = (id, attrs) => {
+  return repository.update(id, attrs);
+};
+
+module.exports.logout = (token) => {
+  return jwt.drop(token);
+}
+
 // if it throws then forbidden
 module.exports.refresh = async (token) => {
   const { id } = jwt.verify(token);
