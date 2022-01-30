@@ -542,8 +542,7 @@ module.exports = {
           }
         },
         produces: 'application/json'
-      },
-
+      }
     },
 
     '/users/logout': {
@@ -648,7 +647,6 @@ module.exports = {
       type: 'object',
       properties: {
         access: {
-          type: 'string',
           $ref: '#definitions/AccessToken'
         },
         refresh: {
@@ -708,6 +706,5 @@ module.exports = {
         }
       }
     },
-
   }
 };
