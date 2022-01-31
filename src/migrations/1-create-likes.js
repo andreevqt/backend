@@ -6,6 +6,7 @@ module.exports.up = (knex) => {
       table.increments('id');
       table.string('likeableType');
       table.integer('likeableId').unsigned();
+      table.integer('authorId').unsigned();
       table.timestamps(false, true);
     });
 };

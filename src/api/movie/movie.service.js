@@ -14,3 +14,7 @@ module.exports.topRated = async (page = 1) => {
 module.exports.upcoming = async (page = 1) => {
   return (await axios.get('/movie/upcoming', { params: { page } })).data;
 };
+
+module.exports.get = async (id) => {
+  return (await axios.get(`/movie/${id}`)).data;
+};

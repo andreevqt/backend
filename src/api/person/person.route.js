@@ -2,6 +2,7 @@
 
 const { Router } = require('express');
 const controller = require('./person.controller');
+const { authorize } = require('../user/user.middleware');
 
 const router = new Router();
 
@@ -13,11 +14,19 @@ module.exports = (app) => {
     .get(controller.get);
 
   router
+    .route('/:personId/likes')
+    .get(controller.likes.get)
+    .post(authorize, controller.likes.create);
+
+  router
+    .route('/:personId/likes/:likeId')
+    .delete(authorize, controller.likes.delete);
+
+  router
     .route('/popular')
     .get(controller.popular);
 
   router
     .route('/:personId/credits')
     .get(controller.credits);
-
 };
