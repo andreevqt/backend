@@ -56,11 +56,7 @@ module.exports = {
         return res.status(Http.CONFLICT).json({ success: false, message: 'Only one like per person is allowed' });
       }
 
-      const like = await likeService.create({
-        likeableType: 'Person',
-        likeableId: personId,
-        authorId: currentUser.id
-      });
+      const like = await likeService.create(query);
 
       res.status(Http.CREATED).json({ success: true, like });
     }),
