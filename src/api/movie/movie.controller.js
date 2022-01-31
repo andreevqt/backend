@@ -67,15 +67,13 @@ module.exports = {
       }
 
       const like = await likeService.create(query);
-
       res.status(Http.CREATED).json({ success: true, like });
     }),
 
     delete: asyncHandler(async (req, res) => {
-      const { likeId } = req.params;
       const { currentUser } = res.locals;
 
-      const deleted = await likeService.drop(currentUser.id, likeId);
+      const deleted = await likeService.drop(currentUser.id, 'Movie');
       if (!deleted) {
         return res.status(Http.NOT_FOUND).json({ success: false, message: 'Couldn\'t find a like' });
       }
