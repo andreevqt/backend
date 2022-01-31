@@ -21,14 +21,14 @@ module.exports = {
 
   get: asyncHandler(async (req, res) => {
     const { user } = res.locals;
-    return res.status(Http.OK).json({ success: true, user });
+    res.status(Http.OK).json({ success: true, user });
   }),
 
   list: asyncHandler(async (req, res) => {
     const { page, perPage } = req.query;
 
     const result = await service.list(page, perPage);
-    return res.status(Http.OK).json(result);
+    res.status(Http.OK).json(result);
   }),
 
   create: asyncHandler(async (req, res, next) => {
@@ -85,6 +85,6 @@ module.exports = {
       return res.status(Http.BAD_REQUEST).send({ success: false, message: 'Wrong token' })
     };
 
-    return res.status(Http.OK).send({ success: true, message: 'Logout is successful' });
+    res.status(Http.OK).send({ success: true, message: 'Logout is successful' });
   })
 };

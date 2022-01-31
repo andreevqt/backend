@@ -9,8 +9,7 @@ module.exports.authorize = asyncHandler(async (req, res, next) => {
   const header = req.headers['authorization'] || '';
   const authorization = header.split(' ')[1];
   if (!authorization) {
-    res.status(Http.UNAUTHROIZED).json({ success: false, message: 'Not authorzied' });
-    return;
+    return res.status(Http.UNAUTHROIZED).json({ success: false, message: 'Not authorzied' });
   }
 
   try {
@@ -23,7 +22,7 @@ module.exports.authorize = asyncHandler(async (req, res, next) => {
     res.locals.currentUser = user;
     next();
   } catch (err) {
-    return res.status(Http.FORBIDDEN).json({ success: false, message: 'Forbidden' });
+    res.status(Http.FORBIDDEN).json({ success: false, message: 'Forbidden' });
   }
 });
 

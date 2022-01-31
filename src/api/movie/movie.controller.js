@@ -9,20 +9,20 @@ module.exports = {
     const { page } = req.query;
 
     const result = await service.popular(page);
-    return res.status(Http.OK).json(result);
+    res.status(Http.OK).json(result);
   }),
 
   topRated: asyncHandler(async (req, res) => {
     const { page } = req.query;
 
     const result = await service.topRated(page);
-    return res.status(Http.OK).json(result);
+    res.status(Http.OK).json(result);
   }),
 
   upcoming: asyncHandler(async (req, res) => {
     const { page } = req.query;
 
     const result = await service.upcoming(page);
-    return res.status(Http.OK).json(result);
+    res.status(Http.OK).json(result);
   })
 };
