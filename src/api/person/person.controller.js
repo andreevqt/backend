@@ -53,7 +53,7 @@ module.exports = {
 
       const hasLike = await likeService.hasLike(query);
       if (hasLike) {
-        return res.status(Http.FORBIDDEN).json({ success: false, message: 'Only one like per user is allowed' });
+        return res.status(Http.CONFLICT).json({ success: false, message: 'Only one like per person is allowed' });
       }
 
       const like = await likeService.create({
