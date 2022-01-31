@@ -6,3 +6,6 @@ node_modules/
 # log files
 logs/*
 !logs/.gitkeep
+
+# rest client
+*.http

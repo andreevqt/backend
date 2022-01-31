@@ -109,6 +109,153 @@ module.exports = {
       }
     },
 
+    '/movies/{movieId}/likes': {
+      get: {
+        tags: ['Фильмы'],
+        parameters: [{
+          in: 'path',
+          name: 'movieId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }],
+        summary: 'Возвращает лайки',
+        operationId: 'getMoviesLikes',
+        responses: {
+          200: {
+            description: 'Успешно',
+            schema: {
+              type: 'object',
+              properties: {
+                total: {
+                  type: 'integer',
+                  example: 100
+                }, results: {
+                  type: 'array',
+                  items: {
+                    $ref: '#definitions/Like'
+                  }
+                }
+              }
+            }
+          },
+        },
+        produces: 'application/json'
+      },
+      post: {
+        tags: ['Фильмы'],
+        parameters: [{
+          in: 'path',
+          name: 'movieId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }],
+        summary: 'Добавляет лайк',
+        operationId: 'createMoviesLike',
+        security: [{
+          BearerAuth: []
+        }],
+        responses: {
+          201: {
+            description: 'CREATED',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: true
+                },
+                like: {
+                  $ref: '#definitions/Like'
+                }
+              }
+            }
+          },
+          409: {
+            description: 'CONFLICT',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Only one like per movie is allowed'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      }
+    },
+
+    '/movies/{movieId}/likes/{likeId}': {
+      delete: {
+        tags: ['Фильмы'],
+        parameters: [{
+          in: 'path',
+          name: 'movieId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }, {
+          in: 'path',
+          name: 'likeId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }],
+        security: [{
+          BearerAuth: []
+        }],
+        summary: 'Удаляет лайк',
+        operationId: 'deleteMoviesLike',
+        responses: {
+          200: {
+            description: 'OK',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'string',
+                  example: true
+                },
+                message: {
+                  type: 'string',
+                  example: 'Deleted'
+                }
+              }
+            }
+          },
+          404: {
+            description: 'Not found',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'string',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Not found'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      }
+    },
+
     '/persons/{personId}': {
       get: {
         tags: ['Люди'],
@@ -120,7 +267,7 @@ module.exports = {
           format: 'int64',
           required: true
         }],
-        summary: 'Информация о человеке',
+        summary: 'Искать актера по ID',
         description: 'Возвращает информацию о человеке на <a href="https://developers.themoviedb.org/3/people/get-person-details">TMDB</a>',
         responses: {
           200: {
@@ -168,7 +315,7 @@ module.exports = {
           description: 'Номер страницы',
           required: false
         }],
-        summary: 'Популярные люди',
+        summary: 'Популярные актеры',
         description: 'Возвращает список популярных людей на <a href="https://developers.themoviedb.org/3/people/get-popular-people">TMDB</a>',
         responses: {
           200: {
@@ -176,6 +323,153 @@ module.exports = {
           },
           404: {
             description: 'Не найдено'
+          }
+        },
+        produces: 'application/json'
+      }
+    },
+
+    '/persons/{personId}/likes': {
+      get: {
+        tags: ['Люди'],
+        parameters: [{
+          in: 'path',
+          name: 'personId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }],
+        summary: 'Возвращает лайки',
+        operationId: 'getPersonsLikes',
+        responses: {
+          200: {
+            description: 'Успешно',
+            schema: {
+              type: 'object',
+              properties: {
+                total: {
+                  type: 'integer',
+                  example: 100
+                }, results: {
+                  type: 'array',
+                  items: {
+                    $ref: '#definitions/Like'
+                  }
+                }
+              }
+            }
+          },
+        },
+        produces: 'application/json'
+      },
+      post: {
+        tags: ['Люди'],
+        parameters: [{
+          in: 'path',
+          name: 'personId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }],
+        summary: 'Добавляет лайк',
+        operationId: 'createPersonsLike',
+        security: [{
+          BearerAuth: []
+        }],
+        responses: {
+          201: {
+            description: 'CREATED',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: true
+                },
+                like: {
+                  $ref: '#definitions/Like'
+                }
+              }
+            }
+          },
+          409: {
+            description: 'CONFLICT',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Only one like per person is allowed'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      }
+    },
+
+    '/persons/{personId}/likes/{likeId}': {
+      delete: {
+        tags: ['Люди'],
+        parameters: [{
+          in: 'path',
+          name: 'personId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }, {
+          in: 'path',
+          name: 'likeId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }],
+        security: [{
+          BearerAuth: []
+        }],
+        summary: 'Удаляет лайк',
+        operationId: 'deletePersonsLike',
+        responses: {
+          200: {
+            description: 'OK',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'string',
+                  example: true
+                },
+                message: {
+                  type: 'string',
+                  example: 'Deleted'
+                }
+              }
+            }
+          },
+          404: {
+            description: 'Not found',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'string',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Not found'
+                }
+              }
+            }
           }
         },
         produces: 'application/json'
@@ -653,6 +947,19 @@ module.exports = {
         },
         refresh: {
           $ref: '#definitions/Token'
+        }
+      }
+    },
+
+    Like: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'integer',
+          example: 1
+        },
+        author: {
+          $ref: '#definitions/User'
         }
       }
     },
