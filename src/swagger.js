@@ -192,22 +192,12 @@ module.exports = {
           }
         },
         produces: 'application/json'
-      }
-    },
-
-    '/movies/{movieId}/likes/{likeId}': {
+      },
       delete: {
         tags: ['Фильмы'],
         parameters: [{
           in: 'path',
           name: 'movieId',
-          description: 'id',
-          type: 'integer',
-          format: 'int64',
-          required: true
-        }, {
-          in: 'path',
-          name: 'likeId',
           description: 'id',
           type: 'integer',
           format: 'int64',
@@ -412,22 +402,12 @@ module.exports = {
           }
         },
         produces: 'application/json'
-      }
-    },
-
-    '/persons/{personId}/likes/{likeId}': {
+      },
       delete: {
         tags: ['Люди'],
         parameters: [{
           in: 'path',
           name: 'personId',
-          description: 'id',
-          type: 'integer',
-          format: 'int64',
-          required: true
-        }, {
-          in: 'path',
-          name: 'likeId',
           description: 'id',
           type: 'integer',
           format: 'int64',
@@ -567,7 +547,6 @@ module.exports = {
               }
             }
           },
-
           400: {
             schema: {
               type: 'object',
@@ -585,7 +564,6 @@ module.exports = {
               }
             }
           },
-
           409: {
             schema: {
               type: 'object',

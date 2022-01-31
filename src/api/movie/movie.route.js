@@ -16,10 +16,7 @@ module.exports = (app) => {
   router
     .route('/:movieId/likes')
     .get(controller.likes.get)
-    .post(authorize, controller.likes.create);
-
-  router
-    .route('/:movieId/likes/:likeId')
+    .post(authorize, controller.likes.create)
     .delete(authorize, controller.likes.delete);
 
   router
