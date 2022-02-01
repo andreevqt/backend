@@ -43,7 +43,7 @@ module.exports.refresh = async (token) => {
     return;
   }
 
-  await jwt.drop(token);
+  await jwt.drop(user.email);
 
   return jwt.generateTokens(user.email, user.getData());
 };
