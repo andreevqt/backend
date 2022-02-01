@@ -15,8 +15,9 @@ module.exports.list = (page, perPage) => {
 };
 
 module.exports.create = async (attrs) => {
+  const { email } = attrs;
   const user = await repository.create(attrs);
-  const tokens = await jwt.generateTokens(user.getData());
+  const tokens = await jwt.generateTokens(email, user.getData());
   return { ...user.toJSON(), tokens };
 };
 
@@ -25,7 +26,7 @@ module.exports.update = (id, attrs) => {
 };
 
 module.exports.logout = (token) => {
-  return jwt.drop(token);
+  return jwt.drop(null, token);
 }
 
 // if it throws then forbidden
@@ -44,7 +45,7 @@ module.exports.refresh = async (token) => {
 
   await jwt.drop(token);
 
-  return jwt.generateTokens(user.getData());
+  return jwt.generateTokens(user.email, user.getData());
 };
 
 module.exports.checkPassword = (user, password) => {
@@ -61,7 +62,10 @@ module.exports.login = async (email, password) => {
     return;
   }
 
-  const tokens = await jwt.generateTokens(user.getData());
+  // drop all tokens
+  await jwt.drop(email);
+
+  const tokens = await jwt.generateTokens(email, user.getData());
   return { ...user.toJSON(), tokens };
 };
 

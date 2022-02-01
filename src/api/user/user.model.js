@@ -18,7 +18,7 @@ class User extends Model {
 
   getData() {
     return {
-      id: this.id
+      id: this.id,
     };
   }
 
