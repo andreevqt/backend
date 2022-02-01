@@ -10,8 +10,8 @@ module.exports.get = (query) => {
   return repository.get(query);
 };
 
-module.exports.drop = (authorId, likeableType) => {
-  return repository.drop({ authorId, likeableType });
+module.exports.drop = (query) => {
+  return repository.drop(query);
 }
 
 module.exports.hasLike = async (query) => {

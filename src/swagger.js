@@ -38,6 +38,9 @@ module.exports = {
   }, {
     name: 'Пользователи',
     description: 'Авторизация, смена пароля, обновление токенов'
+  }, {
+    name: 'Обзоры',
+    description: 'Обзоры фильмов'
   }],
 
   securityDefinitions: {
@@ -231,7 +234,7 @@ module.exports = {
               type: 'object',
               properties: {
                 success: {
-                  type: 'string',
+                  type: 'boolean',
                   example: false
                 },
                 message: {
@@ -244,6 +247,135 @@ module.exports = {
         },
         produces: 'application/json'
       }
+    },
+
+    '/movies/{movieId}/reviews': {
+      get: {
+        tags: ['Фильмы'],
+        parameters: [{
+          in: 'path',
+          name: 'movieId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }, {
+          in: 'query',
+          name: 'page',
+          description: 'Номер страницы',
+          required: false
+        }, {
+          in: 'query',
+          name: 'perPage',
+          description: 'Количество записей на странице',
+          required: false
+        }],
+        summary: 'Возвращает список обзоров',
+        responses: {
+          200: {
+            description: 'OK',
+            schema: {
+              type: 'object',
+              properties: {
+                total: {
+                  type: 'integer',
+                  example: 50
+                },
+                results: {
+                  type: 'array',
+                  items: {
+                    $ref: '#definitions/Review'
+                  }
+                }
+              }
+            }
+          },
+          404: {
+            description: 'Not found',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Movie not found'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      },
+      post: {
+        tags: ['Фильмы'],
+        parameters: [{
+          in: 'path',
+          name: 'movieId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }, {
+          in: 'body',
+          name: 'body',
+          type: 'object',
+          required: true,
+          properties: {
+            title: {
+              type: 'string',
+              example: 'Citizen Kane'
+            },
+            content: {
+              type: 'string',
+              example: 'Citizen Kane Is a triumph not only for Orson Welles, but for his entire company as well.'
+            }
+          }
+        }],
+        security: [{
+          BearerAuth: []
+        }],
+        summary: 'Создает обзор',
+        responses: {
+          201: {
+            description: 'OK',
+            schema: {
+              type: 'object',
+              properties: {
+                total: {
+                  type: 'integer',
+                  example: 50
+                },
+                results: {
+                  type: 'array',
+                  items: {
+                    $ref: '#definitions/Review'
+                  }
+                }
+              }
+            }
+          },
+          404: {
+            description: 'Not found',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Movie not found'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      },
     },
 
     '/persons/{personId}': {
@@ -885,6 +1017,243 @@ module.exports = {
         },
         produces: 'application/json'
       }
+    },
+
+    '/reviews': {
+      get: {
+        tags: ['Обзоры'],
+        parameters: [{
+          in: 'query',
+          name: 'page',
+          description: 'Номер страницы',
+          required: false
+        }, {
+          in: 'query',
+          name: 'perPage',
+          description: 'Количество записей на странице',
+          required: false
+        }],
+        summary: 'Возвращает обзоры',
+        responses: {
+          200: {
+            description: 'OK',
+            schema: {
+              type: 'object',
+              properties: {
+                total: {
+                  type: 'integer',
+                  example: 50
+                },
+                results: {
+                  type: 'array',
+                  items: {
+                    $ref: '#definitions/Review'
+                  }
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      }
+    },
+
+    '/reviews/{reviewId}': {
+      get: {
+        tags: ['Обзоры'],
+        parameters: [{
+          in: 'path',
+          name: 'reviewId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }],
+        summary: 'Возвращает обзор',
+        responses: {
+          200: {
+            description: 'OK',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: true
+                },
+                review: {
+                  $ref: '#definitions/Review'
+                }
+              }
+            }
+          },
+          404: {
+            description: 'Not found',
+            schema: {
+              type: 'object',
+              properties: {
+                status: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Not found'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      },
+      put: {
+        tags: ['Обзоры'],
+        parameters: [{
+          in: 'path',
+          name: 'reviewId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }, {
+          in: 'body',
+          name: 'body',
+          type: 'object',
+          required: true,
+          properties: {
+            title: {
+              type: 'string',
+              example: 'Citizen Kane'
+            },
+            content: {
+              type: 'string',
+              example: 'Citizen Kane Is a triumph not only for Orson Welles, but for his entire company as well.'
+            }
+          }
+        }],
+        operationId: 'updateReview',
+        security: [{
+          BearerAuth: []
+        }],
+        summary: 'Обновляет обзор',
+        responses: {
+          200: {
+            description: 'OK',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: true
+                },
+                review: {
+                  $ref: '#definitions/Review'
+                }
+              }
+            }
+          },
+          400: {
+            description: 'Bad request'
+          },
+          403: {
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Review should belong to current user'
+                }
+              }
+            }
+          },
+          404: {
+            description: 'Not found',
+            schema: {
+              type: 'object',
+              properties: {
+                status: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Not found'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      },
+      delete: {
+        tags: ['Обзоры'],
+        parameters: [{
+          in: 'path',
+          name: 'reviewId',
+          description: 'id',
+          type: 'integer',
+          format: 'int64',
+          required: true
+        }],
+        operationId: 'deleteReview',
+        security: [{
+          BearerAuth: []
+        }],
+        summary: 'Удаляет обзор',
+        responses: {
+          200: {
+            description: 'OK',
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: true
+                },
+                message: {
+                  type: 'string',
+                  example: 'Review is deleted'
+                }
+              }
+            }
+          },
+          403: {
+            schema: {
+              type: 'object',
+              properties: {
+                success: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Review should belong to current user'
+                }
+              }
+            }
+          },
+          404: {
+            description: 'Not found',
+            schema: {
+              type: 'object',
+              properties: {
+                status: {
+                  type: 'boolean',
+                  example: false
+                },
+                message: {
+                  type: 'string',
+                  example: 'Not found'
+                }
+              }
+            }
+          }
+        },
+        produces: 'application/json'
+      }
     }
   },
 
@@ -935,6 +1304,27 @@ module.exports = {
         id: {
           type: 'integer',
           example: 1
+        },
+        author: {
+          $ref: '#definitions/User'
+        }
+      }
+    },
+
+    Review: {
+      type: 'object',
+      properties: {
+        id: {
+          type: 'integer',
+          example: 1
+        },
+        title: {
+          type: 'string',
+          example: 'Citizen Kane'
+        },
+        content: {
+          type: 'string',
+          example: 'Citizen Kane Is a triumph not only for Orson Welles, but for his entire company as well.'
         },
         author: {
           $ref: '#definitions/User'
