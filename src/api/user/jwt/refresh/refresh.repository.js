@@ -2,14 +2,14 @@
 
 const RefreshToken = require('./refresh.model');
 
-module.exports.create = (token) => {
-  return RefreshToken.query().insert({ token });
+module.exports.create = (email, token) => {
+  return RefreshToken.query().insert({ email, token });
 };
 
 module.exports.getByToken = (token) => {
   return RefreshToken.query().where({ token }).first();
 };
 
-module.exports.drop = (token) => {
-  return RefreshToken.query().where({ token }).del();
+module.exports.drop = (email, token) => {
+  return RefreshToken.query().where({ token, email }).skipUndefined().del();
 };

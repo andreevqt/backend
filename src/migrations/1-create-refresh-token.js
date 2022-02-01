@@ -4,6 +4,7 @@ module.exports.up = (knex) => {
   return knex.schema
     .createTable('refresh_tokens', (table) => {
       table.increments('id');
+      table.string('email');
       table.text('token');
     });
 };
