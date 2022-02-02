@@ -6,11 +6,23 @@ const personService = require('./person.service')
 const likeService = require('../like/like.service');
 
 module.exports = {
-  get: asyncHandler(async (req, res) => {
-    const { personId } = req.params;
+  checkPerson: asyncHandler(async (req, res, next, id) => {
+    if (!/^[0-9]+$/.test(id)) {
+      return res.status(Http.BAD_REQUEST).json({ success: false, message: 'Id should be a number' });
+    }
 
-    const result = await personService.get(personId);
-    return res.status(Http.OK).json(result);
+    const person = await personService.get(id);
+    if (!person) {
+      return res.status(Http.NOT_FOUND).json({ success: false, message: 'Person not found' });
+    }
+
+    res.locals.person = person;
+    next();
+  }),
+
+  get: asyncHandler(async (req, res) => {
+    const { person } = res.locals;
+    return res.status(Http.OK).json(person);
   }),
 
   popular: asyncHandler(async (req, res) => {
@@ -21,20 +33,19 @@ module.exports = {
   }),
 
   credits: asyncHandler(async (req, res) => {
-    const { personId } = req.params;
-
-    const result = await personService.credits(personId);
+    const { person } = res.locals;
+    const result = await personService.credits(person.id);
     return res.status(Http.OK).json(result);
   }),
 
   likes: {
     get: asyncHandler(async (req, res) => {
       const { page } = req.query;
-      const { personId } = req.params;
+      const { person } = res.locals;
 
       const result = await likeService.get({
         likeableType: 'Person',
-        likeableId: personId,
+        likeableId: person.id,
         page
       });
 
@@ -42,12 +53,11 @@ module.exports = {
     }),
 
     create: asyncHandler(async (req, res) => {
-      const { personId } = req.params;
-      const { currentUser } = res.locals;
+      const { currentUser, person } = res.locals;
 
       const query = {
         likeableType: 'Person',
-        likeableId: personId,
+        likeableId: person.id,
         authorId: currentUser.id
       };
 
@@ -61,14 +71,20 @@ module.exports = {
     }),
 
     delete: asyncHandler(async (req, res) => {
-      const { currentUser } = res.locals;
+      const { currentUser, person } = res.locals;
 
-      const deleted = await likeService.drop(currentUser.id, 'Person');
+      const query = {
+        likeableType: 'Person',
+        likeableId: person.id,
+        authorId: currentUser.id
+      };
+
+      const deleted = await likeService.drop(query);
       if (!deleted) {
         return res.status(Http.NOT_FOUND).json({ success: false, message: 'Couldn\'t find a like' });
       }
 
-      res.status(Http.OK).json({success: true, message: 'Deleted'});
+      res.status(Http.OK).json({ success: true, message: 'Deleted' });
     })
   }
 };

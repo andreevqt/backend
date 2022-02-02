@@ -5,6 +5,7 @@ const movies = require('./movie/movie.route');
 const genres = require('./genre/genre.route');
 const persons = require('./person/person.route');
 const users = require('./user/user.route');
+const reviews = require('./review/review.route');
 
 const router = new Router();
 
@@ -16,5 +17,7 @@ genres(router);
 persons(router);
 // init users
 users(router);
+// init reviews
+reviews(router);
 
 module.exports = router;

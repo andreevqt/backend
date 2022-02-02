@@ -32,6 +32,6 @@ module.exports = async (port = config.get('app.port')) => {
   await bootstrap();
 
   return once(app.listen(port), `listening`)
-    .then(() => console.log(chalk.green(`Listening on port ${port}`)))
-    .catch((err) => console.log(chalk.green(err)));
+    .then(() => console.log(chalk.blue(`Listening on port ${port}`)))
+    .catch((err) => console.log(chalk.red(err)));
 };

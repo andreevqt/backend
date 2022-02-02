@@ -10,6 +10,9 @@ module.exports = (app) => {
   app.use('/persons', router);
 
   router
+    .param('personId', controller.checkPerson);
+
+  router
     .route('/:personId')
     .get(controller.get);
 

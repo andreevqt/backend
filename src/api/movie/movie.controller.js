@@ -4,16 +4,40 @@ const asyncHandler = require('express-async-handler');
 const { Http } = require('../../constants');
 const movieService = require('./movie.service');
 const likeService = require('../like/like.service');
+const reviewService = require('../review/review.service');
 
 module.exports = {
-  get: asyncHandler(async (req, res) => {
-    const { movieId } = req.params;
-    try {
-      const result = await movieService.get(movieId);
-      res.status(Http.OK).json(result);
-    } catch (err) {
-      res.status(Http.NOT_FOUND).json({ success: false, message: 'Not found' });
+  checkMovie: asyncHandler(async (req, res, next, id) => {
+    if (!/^[0-9]+$/.test(id)) {
+      return res.status(Http.BAD_REQUEST).json({ success: false, message: 'Id should be a number' });
     }
+
+    const movie = await movieService.get(id);
+    if (!movie) {
+      return res.status(Http.NOT_FOUND).json({ success: false, message: 'Movie not found' });
+    }
+
+    res.locals.movie = movie;
+    next();
+  }),
+
+  checkReview: asyncHandler(async (req, res, next, id) => {
+    if (!/^[0-9]+$/.test(id)) {
+      return res.status(Http.BAD_REQUEST).json({ success: false, message: 'Id should be a number' });
+    }
+
+    const review = await reviewService.get(id);
+    if (!review) {
+      return res.status(Http.NOT_FOUND).json({ success: false, message: 'Movie not found' });
+    }
+
+    res.locals.review = review;
+    next();
+  }),
+
+  get: asyncHandler(async (req, res) => {
+    const { movie } = res.locals;
+    res.status(Http.OK).json(movie);
   }),
 
   popular: asyncHandler(async (req, res) => {
@@ -40,11 +64,11 @@ module.exports = {
   likes: {
     get: asyncHandler(async (req, res) => {
       const { page } = req.query;
-      const { movieId } = req.params;
+      const { movie } = res.locals;
 
       const result = await likeService.get({
         likeableType: 'Movie',
-        likeableId: movieId,
+        likeableId: movie.id,
         page
       });
 
@@ -52,12 +76,12 @@ module.exports = {
     }),
 
     create: asyncHandler(async (req, res) => {
-      const { movieId } = req.params;
+      const { movie } = res.locals;
       const { currentUser } = res.locals;
 
       const query = {
         likeableType: 'Movie',
-        likeableId: movieId,
+        likeableId: movie.id,
         authorId: currentUser.id
       };
 
@@ -71,14 +95,36 @@ module.exports = {
     }),
 
     delete: asyncHandler(async (req, res) => {
-      const { currentUser } = res.locals;
+      const { currentUser, movie } = res.locals;
 
-      const deleted = await likeService.drop(currentUser.id, 'Movie');
+      const query = {
+        likeableType: 'Movie',
+        likeableId: movie.id,
+        authorId: currentUser.id
+      };
+
+      const deleted = await likeService.drop(query);
       if (!deleted) {
         return res.status(Http.NOT_FOUND).json({ success: false, message: 'Couldn\'t find a like' });
       }
 
-      res.status(Http.OK).json({success: true, message: 'Deleted'});
+      res.status(Http.OK).json({ success: true, message: 'Deleted' });
     })
+  },
+
+  reviews: {
+    list: asyncHandler(async (req, res) => {
+      const { movieId } = req.params;
+      const { page, perPage } = req.body;
+      const result = await reviewService.listByMovie(movieId, page, perPage);
+      res.status(Http.OK).json(result);
+    }),
+
+    create: asyncHandler(async (req, res) => {
+      const attrs = req.body;
+      const { movie, currentUser } = res.locals;
+      const review = await reviewService.create(movie.id, { authorId: currentUser.id, ...attrs });
+      res.status(Http.CREATED).json({ success: true, review });
+    }),
   }
 };
