@@ -7,6 +7,7 @@ const persons = require('./person/person.route');
 const users = require('./user/user.route');
 const reviews = require('./review/review.route');
 const comments = require('./comment/comment.route');
+const common = require('./common/common.route');
 
 const router = new Router();
 
@@ -22,5 +23,7 @@ users(router);
 reviews(router);
 // init comments
 comments(router);
+// init common
+common(router);
 
 module.exports = router;
