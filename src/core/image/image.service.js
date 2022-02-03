@@ -37,8 +37,8 @@ const resizeTo = (buffer, name, options) => sharp(buffer)
 const generateThumbnail = async (file) => {
   const { width, height } = await getDimensions(file.buffer);
   if (width > thumbnailSizes.width || height > thumbnailSizes.height) {
-    const name = `thumbnail_${file.name}${file.ext}`;
-    const res = await resizeTo(file.buffer, name, thumbnailSizes);
+    const name = `thumbnail_${file.name}`;
+    const res = await resizeTo(file.buffer, `${name}${file.ext}`, thumbnailSizes);
     if (res) {
       const { width, height, size } = res;
       return {
