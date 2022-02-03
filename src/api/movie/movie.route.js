@@ -15,6 +15,18 @@ module.exports = (app) => {
     .param('movieId', controller.checkMovie);
 
   router
+    .route('/popular')
+    .get(controller.popular);
+
+  router
+    .route('/top_rated')
+    .get(controller.topRated);
+
+  router
+    .route('/upcoming')
+    .get(controller.upcoming);
+
+  router
     .route('/:movieId')
     .get(controller.get)
 
@@ -28,16 +40,4 @@ module.exports = (app) => {
     .route('/:movieId/reviews')
     .get(controller.reviews.list)
     .post(authorize, validate(reviewValidator.create), controller.reviews.create);
-
-  router
-    .route('/popular')
-    .get(controller.popular);
-
-  router
-    .route('/top_rated')
-    .get(controller.topRated);
-
-  router
-    .route('/upcoming')
-    .get(controller.upcoming);
 };

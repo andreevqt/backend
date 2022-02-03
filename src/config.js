@@ -39,7 +39,7 @@ const config = {
     port: getInteger(process.env.APP_PORT, 3000),
     secret: getString(process.env.APP_SECRET),
     prefix: getString(process.env.API_PREFIX, ''),
-    url: getString(process.env.APP_URL, 'http://localhost')
+    url: getString(process.env.APP_URL, 'http://localhost'),
   },
   db: {
     user: getString(process.env.DB_USER),
@@ -66,6 +66,13 @@ const get = (key) => {
 const set = (key, value) => {
   _.set(config, key, value);
 };
+
+let fullUrl = get('app.url');
+if (process.env !== 'production') {
+  fullUrl += `:${get('app.port')}`;
+}
+
+set('app.fullUrl', fullUrl)
 
 module.exports = {
   get,

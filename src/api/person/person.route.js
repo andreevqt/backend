@@ -13,6 +13,10 @@ module.exports = (app) => {
     .param('personId', controller.checkPerson);
 
   router
+    .route('/popular')
+    .get(controller.popular);
+
+  router
     .route('/:personId')
     .get(controller.get);
 
@@ -21,10 +25,6 @@ module.exports = (app) => {
     .get(controller.likes.get)
     .post(authorize, controller.likes.create)
     .delete(authorize, controller.likes.delete);
-
-  router
-    .route('/popular')
-    .get(controller.popular);
 
   router
     .route('/:personId/credits')

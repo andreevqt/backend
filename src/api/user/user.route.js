@@ -4,6 +4,7 @@ const { Router } = require('express');
 const controller = require('./user.controller');
 const validator = require('./user.validator');
 const { validate } = require('../../core/middleware');
+const { upload } = require('../../core/image/image.middleware')
 const { authorize, isCurrentUser } = require('./user.middleware');
 
 const router = new Router();
@@ -16,22 +17,22 @@ module.exports = (app) => {
   router
     .route('/')
     .get(controller.list)
-    .post(validate(validator.create), controller.create);
+    .post(upload.single('avatar'), validate(validator.create), controller.create);
+
+  router
+    .route('/token')
+    .post(validate(validator.token), controller.token);
+
+  router
+    .route('/login')
+    .post(validate(validator.login), controller.login);
+
+  router
+    .route('/logout')
+    .post(validate(validator.logout), controller.logout);
 
   router
     .route('/:userId')
     .get(controller.get)
     .put(authorize, isCurrentUser, validate(validator.update), controller.update);
-
-  router
-    .route('/token')
-    .post(controller.token);
-
-  router
-    .route('/login')
-    .post(controller.login);
-
-  router
-    .route('/logout')
-    .post(controller.logout);
 };

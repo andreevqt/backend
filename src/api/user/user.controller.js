@@ -33,9 +33,10 @@ module.exports = {
 
   create: asyncHandler(async (req, res, next) => {
     const attrs = req.body;
+    const avatar = req.file;
 
     try {
-      const user = await service.create(attrs);
+      const user = await service.create({ avatar, ...attrs });
       res.status(Http.CREATED).json({ success: true, user });
     } catch (err) {
       service.checkDuplicateEmail(err, req, res, next);
@@ -76,9 +77,6 @@ module.exports = {
 
   logout: asyncHandler(async (req, res) => {
     const { token } = req.body;
-    if (!token) {
-      return res.sendStatus(Http.BAD_REQUEST).json({ success: false, message: 'Token is missing' });
-    }
 
     const result = await service.logout(token);
     if (!result) {
