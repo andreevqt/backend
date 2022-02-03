@@ -22,6 +22,16 @@ module.exports.list = (page, perPage) => {
   return repository.list(page, perPage);
 };
 
-module.exports.drop = (id) => {
-  return repository.drop(id);
+module.exports.delete = (id) => {
+  return repository.delete(id);
+};
+
+module.exports.comments = {
+  list: (id, page, perPage) => {
+    return repository.comments.list(id, page, perPage);
+  },
+
+  create: (id, attrs) => {
+    return repository.comments.create(id, attrs);
+  }
 };
