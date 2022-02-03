@@ -13,5 +13,18 @@ module.exports = {
     name: Yup.string(),
     password: Yup.string(),
     email: Yup.string().email()
+  }),
+
+  token: Yup.object({
+    token: Yup.string().required()
+  }),
+
+  login: Yup.object({
+    email: Yup.string().email().required(),
+    password: Yup.string().required()
+  }),
+
+  logout: Yup.object({
+    token: Yup.string().required()
   })
 };
