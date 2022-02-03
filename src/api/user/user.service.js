@@ -5,6 +5,7 @@ const repository = require('./user.repository');
 const jwt = require('./jwt/jwt.service');
 const { Http } = require('../../constants');
 const crypto = require('../../core/crypto');
+const imageService = require('../../core/image/image.service');
 
 module.exports.get = (id) => {
   return repository.get(id);
@@ -15,8 +16,9 @@ module.exports.list = (page, perPage) => {
 };
 
 module.exports.create = async (attrs) => {
-  const { email } = attrs;
-  const user = await repository.create(attrs);
+  const { email, avatar } = attrs;
+  const result = await imageService.process(avatar);
+  const user = await repository.create({ ...attrs, avatar: result });
   const tokens = await jwt.generateTokens(email, user.getData());
   return { ...user.toJSON(), tokens };
 };
@@ -26,7 +28,7 @@ module.exports.update = (id, attrs) => {
 };
 
 module.exports.logout = (token) => {
-  return jwt.drop(null, token);
+  return jwt.drop(undefined, token);
 }
 
 // if it throws then forbidden

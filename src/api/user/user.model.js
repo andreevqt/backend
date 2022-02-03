@@ -1,11 +1,34 @@
 'use strict';
 
 const Model = require('../../core/model');
+const Image = require('../../core/image/image.model');
 const crypto = require('../../core/crypto');
 
 class User extends Model {
   static get tableName() {
     return 'users';
+  }
+
+  static get relationMappings() {
+    return {
+      image: {
+        relation: Model.HasOneRelation,
+        modelClass: Image,
+
+        filter: (builder) => {
+          builder.where('imageableType', 'User');
+        },
+
+        beforeInsert: (model) => {
+          model.imageableType = 'User';
+        },
+
+        join: {
+          from: 'users.id',
+          to: 'images.imageableId'
+        }
+      }
+    }
   }
 
   set password(password) {
@@ -26,7 +49,8 @@ class User extends Model {
     return {
       id: this.id,
       name: this.name,
-      email: this.email
+      email: this.email,
+      image: this.image
     }
   }
 }
