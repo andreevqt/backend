@@ -6,6 +6,7 @@ const genres = require('./genre/genre.route');
 const persons = require('./person/person.route');
 const users = require('./user/user.route');
 const reviews = require('./review/review.route');
+const comments = require('./comment/comment.route');
 
 const router = new Router();
 
@@ -19,5 +20,7 @@ persons(router);
 users(router);
 // init reviews
 reviews(router);
+// init comments
+comments(router);
 
 module.exports = router;

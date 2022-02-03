@@ -22,6 +22,16 @@ module.exports.update = (id, attrs) => {
   return Review.query().withGraphFetched('author').patchAndFetchById(id, attrs);
 };
 
-module.exports.drop = (id) => {
+module.exports.delete = (id) => {
   return Review.query().findById(id).del();
+};
+
+module.exports.comments = {
+  list: (id, page, perPage) => {
+    return Review.relatedQuery('comments').withGraphFetched('author').for(id).page(page, perPage);
+  },
+
+  create: (id, attrs) => {
+    return Review.relatedQuery('comments').withGraphFetched('author').for(id).insert(attrs);
+  }
 };

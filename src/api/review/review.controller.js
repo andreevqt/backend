@@ -38,6 +38,22 @@ module.exports.update = asyncHandler(async (req, res) => {
 
 module.exports.delete = asyncHandler(async (req, res) => {
   const { review } = res.locals;
-  await reviewService.drop(review.id);
+  await reviewService.delete(review.id);
   res.status(Http.OK).json({ success: true, message: 'Review is deleted' });
 });
+
+module.exports.comments = {
+  list: asyncHandler(async (req, res) => {
+    const { review } = res.locals;
+    const { page, perPage } = req.query;
+    const results = await reviewService.comments.list(review.id, page, perPage);
+    res.status(Http.OK).json(results)
+  }),
+
+  create: asyncHandler(async (req, res) => {
+    const { review, currentUser } = res.locals;
+    const attrs = { ...req.body, authorId: currentUser.id };
+    const results = await reviewService.comments.create(review.id, attrs);
+    res.status(Http.CREATED).json(results);
+  })
+};
