@@ -21,23 +21,23 @@ module.exports.checkComment = asyncHandler(async (req, res, next, id) => {
 module.exports.list = asyncHandler(async (req, res) => {
   const { page, perPage } = req.query;
   const results = await service.list(page, perPage);
-  return res.status(Http.OK).json(results)
+  res.status(Http.OK).json(results)
 });
 
 module.exports.get = asyncHandler(async (req, res) => {
   const { comment } = res.locals;
-  return res.status(Http.OK).json({ success: true, comment });
+  res.status(Http.OK).json({ success: true, comment });
 });
 
 module.exports.update = asyncHandler(async (req, res) => {
   const attrs = req.body;
   const { comment } = res.locals;
   const updated = await service.update(comment.id, attrs);
-  return res.status(Http.OK).json({ success: true, comment: updated });
+  res.status(Http.OK).json({ success: true, comment: updated });
 });
 
 module.exports.delete = asyncHandler(async (req, res) => {
   const { comment } = res.locals;
   await service.delete(comment.id);
-  return res.status(Http.OK).json({ success: true, message: 'Comment is deleted' });
+  res.status(Http.OK).json({ success: true, message: 'Comment is deleted' });
 });
