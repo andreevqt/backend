@@ -15,6 +15,10 @@ module.exports = (app) => {
     .param('movieId', controller.checkMovie);
 
   router
+    .route('/featured')
+    .get(controller.featured);
+
+  router
     .route('/popular')
     .get(controller.popular);
 
