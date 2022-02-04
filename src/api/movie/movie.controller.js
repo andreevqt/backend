@@ -43,7 +43,8 @@ module.exports = {
 
   featured: asyncHandler(async (req, res) => {
     const results = await settingsService.get('featured_movies');
-    res.status(Http.OK).json(results || []);
+    const response = results && results.value ? results.value : [];
+    res.status(Http.OK).json(response);
   }),
 
   popular: asyncHandler(async (req, res) => {
