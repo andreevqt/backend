@@ -5,6 +5,7 @@ const { Http } = require('../../constants');
 const movieService = require('./movie.service');
 const likeService = require('../like/like.service');
 const reviewService = require('../review/review.service');
+const settingsService = require('../../core/settings/settings.service');
 
 module.exports = {
   checkMovie: asyncHandler(async (req, res, next, id) => {
@@ -38,6 +39,11 @@ module.exports = {
   get: asyncHandler(async (req, res) => {
     const { movie } = res.locals;
     res.status(Http.OK).json(movie);
+  }),
+
+  featured: asyncHandler(async (req, res) => {
+    const results = await settingsService.get('featured_movies');
+    res.status(Http.OK).json(results || []);
   }),
 
   popular: asyncHandler(async (req, res) => {
