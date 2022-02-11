@@ -16,7 +16,10 @@ module.exports.list = (page, perPage) => {
 
 module.exports.create = async ({ avatar, ...rest }) => {
   const user = await User.query().withGraphFetched('image').insert(rest);
-  await user.$relatedQuery('image').insert(avatar);
+  if (avatar) {
+    await user.$relatedQuery('image').insert(avatar);
+  }
+
   return user.$query().withGraphFetched('image');
 };
 

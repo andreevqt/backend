@@ -56,6 +56,10 @@ const generateThumbnail = async (file) => {
 };
 
 module.exports.process = async (file) => {
+  if (!file) {
+    return;
+  }
+
   const { width, height, size } = await getMeta(file.buffer);
   const { mimetype } = file;
   const ext = getExt(file);

@@ -17,7 +17,7 @@ module.exports.upcoming = async (page = 1) => {
 
 module.exports.get = async (id) => {
   try {
-    const movie = (await axios.get(`/movie/${id}`)).data;
+    const movie = (await axios.get(`/movie/${id}?append_to_response=credits`)).data;
     return movie;
   } catch (err) {} // ignore error
 };

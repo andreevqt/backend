@@ -17,6 +17,7 @@ module.exports.list = (page, perPage) => {
 
 module.exports.create = async (attrs) => {
   const { email, avatar } = attrs;
+  console.log(avatar);
   const result = await imageService.process(avatar);
   const user = await repository.create({ ...attrs, avatar: result });
   const tokens = await jwt.generateTokens(email, user.getData());
