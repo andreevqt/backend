@@ -3,16 +3,16 @@
 const axios = require('axios');
 const _ = require('lodash');
 
-module.exports.popular = async (page = 1) => {
-  return (await axios.get('/movie/popular', { params: { page } })).data;
+module.exports.popular = (page = 1) => {
+  return axios.get('/movie/popular', { params: { page } }).then((response) => response.data);
 };
 
-module.exports.topRated = async (page = 1) => {
-  return (await axios.get('/movie/top_rated', { params: { page } })).data;
+module.exports.topRated = (page = 1) => {
+  return axios.get('/movie/top_rated', { params: { page } }).then((response) => response.data);
 };
 
-module.exports.upcoming = async (page = 1) => {
-  return (await axios.get('/movie/upcoming', { params: { page } })).data;
+module.exports.upcoming = (page = 1) => {
+  return axios.get('/movie/upcoming', { params: { page } }).then((response) => response.data);
 };
 
 module.exports.get = async (id) => {
