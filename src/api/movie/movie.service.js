@@ -15,6 +15,18 @@ module.exports.upcoming = (page = 1) => {
   return axios.get('/movie/upcoming', { params: { page } }).then((response) => response.data);
 };
 
+module.exports.playing = (page = 1) => {
+  return axios.get('/movie/now_playing', { params: { page } }).then((response) => response.data);
+};
+
+module.exports.similar = (id, page = 1) => {
+  return axios.get(`/movie/${id}/similar`, { params: { page } }).then((response) => response.data);
+};
+
+module.exports.recommended = (id, page = 1) => {
+  return axios.get(`/movie/${id}/recommendations`, { params: { page } }).then((response) => response.data);
+};
+
 module.exports.get = async (id) => {
   try {
     const movie = (await axios.get(`/movie/${id}?append_to_response=credits`)).data;

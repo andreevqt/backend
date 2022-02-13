@@ -31,8 +31,20 @@ module.exports = (app) => {
     .get(controller.upcoming);
 
   router
+    .route('/playing')
+    .get(controller.playing);
+
+  router
     .route('/:movieId')
-    .get(controller.get)
+    .get(controller.get);
+
+  router
+    .route('/:movieId/similar')
+    .get(controller.similar);
+
+  router
+    .route('/:movieId/recommended')
+    .get(controller.recommended);
 
   router
     .route('/:movieId/likes')

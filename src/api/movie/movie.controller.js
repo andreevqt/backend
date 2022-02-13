@@ -69,6 +69,29 @@ module.exports = {
     res.status(Http.OK).json(result);
   }),
 
+  playing: asyncHandler(async (req, res) => {
+    const { page } = req.query;
+
+    const result = await movieService.playing(page);
+    res.status(Http.OK).json(result);
+  }),
+
+  similar: asyncHandler(async (req, res) => {
+    const { page } = req.query;
+    const { movie } = res.locals;
+
+    const result = await movieService.similar(movie.id, page);
+    res.status(Http.OK).json(result);
+  }),
+
+  recommended: asyncHandler(async (req, res) => {
+    const { page } = req.query;
+    const { movie } = res.locals;
+
+    const result = await movieService.recommended(movie.id, page);
+    res.status(Http.OK).json(result);
+  }),
+
   likes: {
     get: asyncHandler(async (req, res) => {
       const { page } = req.query;
