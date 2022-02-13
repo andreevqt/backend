@@ -6,10 +6,11 @@ const movieService = require('./movie.service');
 const likeService = require('../like/like.service');
 const reviewService = require('../review/review.service');
 const settingsService = require('../../core/settings/settings.service');
+const { validateId } = require('../../utils');
 
 module.exports = {
   checkMovie: asyncHandler(async (req, res, next, id) => {
-    if (!/^[0-9]+$/.test(id)) {
+    if (!validateId(id)) {
       return res.status(Http.BAD_REQUEST).json({ success: false, message: 'Id should be a number' });
     }
 
@@ -23,7 +24,7 @@ module.exports = {
   }),
 
   checkReview: asyncHandler(async (req, res, next, id) => {
-    if (!/^[0-9]+$/.test(id)) {
+    if (!validateId(id)) {
       return res.status(Http.BAD_REQUEST).json({ success: false, message: 'Id should be a number' });
     }
 

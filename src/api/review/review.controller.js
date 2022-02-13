@@ -3,9 +3,10 @@
 const asyncHandler = require('express-async-handler');
 const reviewService = require('./review.service');
 const { Http } = require('../../constants');
+const { validateId } = require('../../utils');
 
 module.exports.checkReview = asyncHandler(async (req, res, next, id) => {
-  if (!/^[0-9]+$/.test(id)) {
+  if (!validateId(id)) {
     return res.status(Http.BAD_REQUEST).json({ success: false, message: 'Id should be a number' });
   }
 

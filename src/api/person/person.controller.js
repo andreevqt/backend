@@ -4,10 +4,11 @@ const asyncHandler = require('express-async-handler');
 const { Http } = require('../../constants');
 const personService = require('./person.service')
 const likeService = require('../like/like.service');
+const { validateId } = require('../../utils');
 
 module.exports = {
   checkPerson: asyncHandler(async (req, res, next, id) => {
-    if (!/^[0-9]+$/.test(id)) {
+    if (!validateId(id)) {
       return res.status(Http.BAD_REQUEST).json({ success: false, message: 'Id should be a number' });
     }
 
