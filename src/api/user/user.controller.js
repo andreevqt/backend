@@ -66,6 +66,12 @@ module.exports = {
     }
   }),
 
+  getByAccess: asyncHandler(async (req, res) => {
+    const { currentUser } = res.locals;
+    console.log('here');
+    return res.status(Http.OK).json({ success: true, user: currentUser });
+  }),
+
   login: asyncHandler(async (req, res) => {
     const { email, password } = req.body;
     const user = await service.login(email, password);

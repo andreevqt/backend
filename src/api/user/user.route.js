@@ -16,7 +16,7 @@ module.exports = (app) => {
 
   router
     .route('/')
-    .get(controller.list)
+    .get(authorize, controller.getByAccess)
     .post(upload.single('avatar'), validate(validator.create), controller.create);
 
   router
