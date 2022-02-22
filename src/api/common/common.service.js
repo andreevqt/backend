@@ -1,8 +1,8 @@
 'use strict';
 
-const axios = require('axios');
+const requests = require('../../core/requests');
 
 module.exports.configuration = async () => {
-  return (await axios.get('/configuration')).data;
+  return (await requests.tmdb.get('/configuration')).data;
 };
 
