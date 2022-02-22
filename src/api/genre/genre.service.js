@@ -1,8 +1,11 @@
 'use strict';
 
-const axios = require('axios');
+const repository = require('./genre.repository');
 
-module.exports.list = async (page = 1) => {
-  const result = await axios.get('/genre/movie/list', { params: { page } });
-  return result.data.genres;
+module.exports.list = () => {
+  return repository.list();
+};
+
+module.exports.get = (id) => {
+  return repository.get(id);
 };
