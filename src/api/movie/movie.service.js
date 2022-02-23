@@ -9,10 +9,13 @@ const transformMovie = async (movie) => _.omit({
   genres: await genreRepository.findByIds(movie.genre_ids)
 }, 'genre_ids');
 
-const transformMovies = (movies = []) => Promise.all(movies
-  .map(async (movie) => transformMovie(movie)));
+const transformMovies = (movies = []) => Promise.all(
+  movies.map((movie) => transformMovie(movie))
+);
 
-const transformResult = async ({ data }) => ({ ...data, results: await transformMovies(data.results) });
+const transformResult = async ({ data }) => ({
+  ...data, results: await transformMovies(data.results)
+});
 
 module.exports.popular = async (page = 1) => {
   return tmdb
