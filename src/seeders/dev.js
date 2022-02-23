@@ -3,10 +3,10 @@
 const movies = [{
   "adult": false,
   "backdrop_path": "/iQFcwSGbZXMkeyKrxbPnwnRo5fl.jpg",
-  "genre_ids": [
-    28,
-    12,
-    878
+  "genres": [
+    { "id": 28, name: "боевик" },
+    { "id": 12, name: "приключения" },
+    { "id": 878, name: "фантастика" }
   ],
   "id": 634649,
   "original_language": "en",
@@ -23,11 +23,11 @@ const movies = [{
 {
   "adult": false,
   "backdrop_path": "/k2twTjSddgLc1oFFHVibfxp2kQV.jpg",
-  "genre_ids": [
-    28,
-    12,
-    14,
-    878
+  "genres": [
+    { "id": 28, name: "боевик" },
+    { "id": 12, name: "приключения" },
+    { "id": 14, name: "фэнтези" },
+    { "id": 878, name: "фантастика" }
   ],
   "id": 524434,
   "original_language": "en",
@@ -44,11 +44,11 @@ const movies = [{
 {
   "adult": false,
   "backdrop_path": "/3G1Q5xF40HkUBJXxt2DQgQzKTp5.jpg",
-  "genre_ids": [
-    16,
-    35,
-    10751,
-    14
+  "genres": [
+    { "id": 16, "name": "мультфильм" },
+    { "id": 35, "name": "комедия" },
+    { "id": 10751, "name": "семейный" },
+    { "id": 14, "name": "фэнтези" }
   ],
   "id": 568124,
   "original_language": "en",
