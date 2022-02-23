@@ -1,46 +1,57 @@
 'use strict';
 
-const requests = require('../../core/requests');
 const _ = require('lodash');
+const { tmdb } = require('../../core/requests');
+const genreRepository = require('../genre/genre.repository');
 
-module.exports.popular = (page = 1) => {
-  return requests.tmdb
+const transformMovie = async (movie) => _.omit({
+  ...movie,
+  genres: await genreRepository.findByIds(movie.genre_ids)
+}, 'genre_ids');
+
+const transformMovies = (movies = []) => Promise.all(movies
+  .map(async (movie) => transformMovie(movie)));
+
+const transformResult = async ({ data }) => ({ ...data, results: await transformMovies(data.results) });
+
+module.exports.popular = async (page = 1) => {
+  return tmdb
     .get('/movie/popular', { params: { page } })
-    .then((response) => response.data);
+    .then(transformResult);
 };
 
 module.exports.topRated = (page = 1) => {
-  return requests.tmdb
+  return tmdb
     .get('/movie/top_rated', { params: { page } })
-    .then((response) => response.data);
+    .then(transformResult);
 };
 
 module.exports.upcoming = (page = 1) => {
-  return requests.tmdb
+  return tmdb
     .get('/movie/upcoming', { params: { page } })
-    .then((response) => response.data);
+    .then(transformResult);
 };
 
 module.exports.playing = (page = 1) => {
-  return requests.tmdb
+  return tmdb
     .get('/movie/now_playing', { params: { page } })
-    .then((response) => response.data);
+    .then(transformResult);
 };
 
 module.exports.similar = (id, page = 1) => {
-  return requests.tmdb
+  return tmdb
     .get(`/movie/${id}/similar`, { params: { page } })
-    .then((response) => response.data);
+    .then(transformResult);
 };
 
 module.exports.recommended = (id, page = 1) => {
-  return requests.tmdb
+  return tmdb
     .get(`/movie/${id}/recommendations`, { params: { page } })
-    .then((response) => response.data);
+    .then(transformResult);
 };
 
 module.exports.get = async (id) => {
-  return requests.tmdb
+  return tmdb
     .get(`/movie/${id}?append_to_response=credits`)
     .then((response) => response.data)
     .catch((err) => { }); // ingore error
