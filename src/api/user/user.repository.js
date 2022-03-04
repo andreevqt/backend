@@ -20,7 +20,7 @@ module.exports.create = async ({ avatar, ...rest }) => {
     await user.$relatedQuery('image').insert(avatar);
   }
 
-  return user.$query().withGraphFetched('[image]');
+  return user.$query().modify('default');
 };
 
 module.exports.update = (id, attrs) => {

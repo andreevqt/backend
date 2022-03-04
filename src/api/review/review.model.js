@@ -55,8 +55,9 @@ class Review extends Model {
       title: this.title,
       content: this.content,
       author: this.author,
-      movieId: this.movieId
-    }
+      movieId: this.movieId,
+      createdAt: this.createdAt
+    };
   }
 }
 

@@ -8,6 +8,7 @@ module.exports.up = (knex) => {
       table.text('content');
       table.integer('movieId').unsigned();
       table.integer('authorId').unsigned();
+      table.tinyint('rating').defaultTo(10);
       table.timestamps(false, true);
     });
 };
