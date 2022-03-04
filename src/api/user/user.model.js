@@ -2,6 +2,7 @@
 
 const Model = require('../../core/model');
 const Image = require('../../core/image/image.model');
+const Review = require('../review/review.model');
 const crypto = require('../../core/crypto');
 
 class User extends Model {
@@ -27,6 +28,14 @@ class User extends Model {
           from: 'users.id',
           to: 'images.imageableId'
         }
+      },
+      reviews: {
+        relation: Model.HasManyRelation,
+        modelClass: Review,
+        join: {
+          from: 'users.id',
+          to: 'reviews.authorId'
+        }
       }
     }
   }
@@ -50,7 +59,8 @@ class User extends Model {
       id: this.id,
       name: this.name,
       email: this.email,
-      image: this.image
+      image: this.image,
+      reviewsCount: this.reviewsCount
     }
   }
 }

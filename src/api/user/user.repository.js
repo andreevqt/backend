@@ -1,28 +1,38 @@
 'use strict';
 
+const { ref } = require('objection');
 const User = require('./user.model');
+const Review = require('../review/review.model');
+
+const findQuery = () => User.query().withGraphFetched('[image]').select([
+  'users.*',
+  Review.query()
+    .where('authorId', ref('users.id'))
+    .count()
+    .as('reviewsCount')
+]);
 
 module.exports.get = (id) => {
-  return User.query().withGraphFetched('image').findById(id);
+  return findQuery().findById(id);
 };
 
 module.exports.getByEmail = (email) => {
-  return User.query().withGraphFetched('image').where({ email }).first();
+  return findQuery().where({ email }).first();
 }
 
 module.exports.list = (page, perPage) => {
-  return User.query().withGraphFetched('image').page(page, perPage);
+  return findQuery().page(page, perPage);
 };
 
 module.exports.create = async ({ avatar, ...rest }) => {
-  const user = await User.query().withGraphFetched('image').insert(rest);
+  const user = await User.query().insert(rest);
   if (avatar) {
     await user.$relatedQuery('image').insert(avatar);
   }
 
-  return user.$query().withGraphFetched('image');
+  return user.$query().withGraphFetched('[image]');
 };
 
 module.exports.update = (id, attrs) => {
-  return User.query().withGraphFetched('image').patchAndFetchById(id, attrs);
+  return User.query().patchAndFetchById(id, attrs);
 }
