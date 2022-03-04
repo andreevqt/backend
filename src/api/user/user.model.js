@@ -1,8 +1,8 @@
 'use strict';
 
+const { ref } = require('objection');
 const Model = require('../../core/model');
 const Image = require('../../core/image/image.model');
-const Review = require('../review/review.model');
 const crypto = require('../../core/crypto');
 
 class User extends Model {
@@ -11,6 +11,8 @@ class User extends Model {
   }
 
   static get relationMappings() {
+    const Review = require('../review/review.model');
+
     return {
       image: {
         relation: Model.HasOneRelation,
@@ -38,6 +40,22 @@ class User extends Model {
         }
       }
     }
+  }
+
+  static get modifiers() {
+    const Review = require('../review/review.model');
+
+    return {
+      default: (query) => query
+        .withGraphFetched('image')
+        .select([
+          'users.*',
+          Review.query()
+            .where('authorId', ref('users.id'))
+            .count()
+            .as('reviewsCount')
+        ])
+    };
   }
 
   set password(password) {

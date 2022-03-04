@@ -1,27 +1,17 @@
 'use strict';
 
-const { ref } = require('objection');
 const User = require('./user.model');
-const Review = require('../review/review.model');
-
-const findQuery = () => User.query().withGraphFetched('[image]').select([
-  'users.*',
-  Review.query()
-    .where('authorId', ref('users.id'))
-    .count()
-    .as('reviewsCount')
-]);
 
 module.exports.get = (id) => {
-  return findQuery().findById(id);
+  return User.query().modify('default').findById(id);
 };
 
 module.exports.getByEmail = (email) => {
-  return findQuery().where({ email }).first();
-}
+  return User.query().modify('default').where({ email }).first();
+};
 
 module.exports.list = (page, perPage) => {
-  return findQuery().page(page, perPage);
+  return User.query().modify('default').page(page, perPage);
 };
 
 module.exports.create = async ({ avatar, ...rest }) => {

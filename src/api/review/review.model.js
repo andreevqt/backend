@@ -1,7 +1,6 @@
 'use strict';
 
 const Model = require('../../core/model');
-const User = require('../user/user.model');
 const Comment = require('../comment/comment.model');
 
 class Review extends Model {
@@ -9,33 +8,45 @@ class Review extends Model {
     return 'reviews';
   }
 
-  static relationMappings = {
-    author: {
-      relation: Model.BelongsToOneRelation,
-      modelClass: User,
-      join: {
-        from: 'reviews.authorId',
-        to: 'users.id'
-      }
-    },
+  static get relationMappings() {
+    const User = require('../user/user.model');
 
-    comments: {
-      relation: Model.HasManyRelation,
-      modelClass: Comment,
-
-      filter: (builder) => {
-        builder.where('commentableType', 'Review');
+    return {
+      author: {
+        relation: Model.BelongsToOneRelation,
+        modelClass: User,
+        join: {
+          from: 'reviews.authorId',
+          to: 'users.id'
+        }
       },
 
-      beforeInsert: (model) => {
-        model.commentableType = 'Review';
-      },
+      comments: {
+        relation: Model.HasManyRelation,
+        modelClass: Comment,
 
-      join: {
-        from: 'reviews.id',
-        to: 'comments.commentableId'
+        filter: (builder) => {
+          builder.where('commentableType', 'Review');
+        },
+
+        beforeInsert: (model) => {
+          model.commentableType = 'Review';
+        },
+
+        join: {
+          from: 'reviews.id',
+          to: 'comments.commentableId'
+        }
       }
-    }
+    };
+  }
+
+  static get modifiers() {
+    return {
+      default: (query) => {
+        return query.withGraphFetched('author(default)')
+      }
+    };
   }
 
   toJSON() {
