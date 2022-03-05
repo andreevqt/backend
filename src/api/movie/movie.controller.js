@@ -146,7 +146,7 @@ module.exports = {
   reviews: {
     list: asyncHandler(async (req, res) => {
       const { movieId } = req.params;
-      const { page, perPage } = req.body;
+      const { page, perPage } = req.query;
       const result = await reviewService.listByMovie(movieId, page, perPage);
       res.status(Http.OK).json(result);
     }),
