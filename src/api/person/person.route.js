@@ -23,8 +23,8 @@ module.exports = (app) => {
   router
     .route('/:personId/likes')
     .get(controller.likes.get)
-    .post(authorize, controller.likes.create)
-    .delete(authorize, controller.likes.delete);
+    .post(authorize(), controller.likes.create)
+    .delete(authorize(), controller.likes.delete);
 
   router
     .route('/:personId/credits')

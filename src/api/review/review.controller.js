@@ -2,6 +2,7 @@
 
 const asyncHandler = require('express-async-handler');
 const reviewService = require('./review.service');
+const likeService = require('../like/like.service');
 const { Http } = require('../../constants');
 const { validateId } = require('../../utils');
 
@@ -56,5 +57,26 @@ module.exports.comments = {
     const attrs = { ...req.body, authorId: currentUser.id };
     const results = await reviewService.comments.create(review.id, attrs);
     res.status(Http.CREATED).json(results);
+  })
+};
+
+module.exports.likes = {
+  add: asyncHandler(async (req, res) => {
+    const { review, currentUser } = res.locals;
+
+    const query = {
+      likeableType: 'Review',
+      likeableId: review.id,
+      authorId: currentUser.id
+    };
+
+    const hasLike = await likeService.hasLike(query);
+    if (hasLike) {
+      await likeService.drop(query);
+      return res.status(Http.OK).json({ success: false, message: 'Deleted' });
+    }
+
+    await likeService.create(query);
+    res.status(Http.CREATED).json({ success: true, message: 'Created' });
   })
 };

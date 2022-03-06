@@ -21,6 +21,6 @@ module.exports = (app) => {
   router
     .route('/:commentId')
     .get(controller.get)
-    .put(authorize, isCommentsAuthor, validate(validator.update), controller.update)
-    .delete(authorize, isCommentsAuthor, controller.delete);
+    .put(authorize(), isCommentsAuthor, validate(validator.update), controller.update)
+    .delete(authorize(), isCommentsAuthor, controller.delete);
 };

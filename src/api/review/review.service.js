@@ -2,8 +2,8 @@
 
 const repository = require('./review.repository');
 
-module.exports.create = (movieId, attrs) => {
-  return repository.create(movieId, attrs);
+module.exports.create = (movie, attrs) => {
+  return repository.create(movie, attrs);
 };
 
 module.exports.update = (id, attrs) => {

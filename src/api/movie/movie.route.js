@@ -49,11 +49,11 @@ module.exports = (app) => {
   router
     .route('/:movieId/likes')
     .get(controller.likes.get)
-    .post(authorize, controller.likes.create)
-    .delete(authorize, controller.likes.delete);
+    .post(authorize(), controller.likes.create)
+    .delete(authorize(), controller.likes.delete);
 
   router
     .route('/:movieId/reviews')
-    .get(controller.reviews.list)
-    .post(authorize, validate(reviewValidator.create), controller.reviews.create);
+    .get(authorize(false), controller.reviews.list)
+    .post(authorize(), validate(reviewValidator.create), controller.reviews.create);
 };

@@ -107,8 +107,7 @@ module.exports = {
     }),
 
     create: asyncHandler(async (req, res) => {
-      const { movie } = res.locals;
-      const { currentUser } = res.locals;
+      const { movie, currentUser } = res.locals;
 
       const query = {
         likeableType: 'Movie',
@@ -146,16 +145,17 @@ module.exports = {
   reviews: {
     list: asyncHandler(async (req, res) => {
       const { movieId } = req.params;
+      const { currentUser } = res.locals;
       // TODO: fixme
       const { page = 1, perPage = 15 } = req.query;
-      const result = await reviewService.listByMovie(movieId, +page, +perPage);
+      const result = await reviewService.listByMovie(movieId, currentUser && currentUser.id, +page, +perPage);
       res.status(Http.OK).json(result);
     }),
 
     create: asyncHandler(async (req, res) => {
       const attrs = req.body;
       const { movie, currentUser } = res.locals;
-      const review = await reviewService.create(movie.id, { authorId: currentUser.id, ...attrs });
+      const review = await reviewService.create(movie, { authorId: currentUser.id, ...attrs });
       res.status(Http.CREATED).json({ success: true, review });
     }),
   }

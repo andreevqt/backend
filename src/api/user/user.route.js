@@ -16,7 +16,7 @@ module.exports = (app) => {
 
   router
     .route('/')
-    .get(authorize, controller.getByAccess)
+    .get(authorize(), controller.getByAccess)
     .post(upload.single('avatar'), validate(validator.create), controller.create);
 
   router
@@ -34,5 +34,5 @@ module.exports = (app) => {
   router
     .route('/:userId')
     .get(controller.get)
-    .put(authorize, isCurrentUser, validate(validator.update), controller.update);
+    .put(authorize(), isCurrentUser, validate(validator.update), controller.update);
 };

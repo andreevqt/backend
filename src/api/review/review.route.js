@@ -18,16 +18,20 @@ module.exports = (app) => {
 
   router
     .route('/')
-    .get(controller.list);
+    .get(authorize(false), controller.list);
 
   router
     .route('/:reviewId')
-    .get(controller.get)
-    .put(authorize, isAuthor, validate(reviewValidator.update), controller.update)
-    .delete(authorize, isAuthor, controller.delete);
+    .get(authorize(false), controller.get)
+    .put(authorize(), isAuthor, validate(reviewValidator.update), controller.update)
+    .delete(authorize(), isAuthor, controller.delete);
+
+  router
+    .route('/:reviewId/likes')
+    .post(authorize(), controller.likes.add);
 
   router
     .route('/:reviewId/comments')
     .get(controller.comments.list)
-    .post(authorize, validate(commentValidator.create), controller.comments.create);
+    .post(authorize(), validate(commentValidator.create), controller.comments.create);
 };

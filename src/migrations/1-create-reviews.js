@@ -7,6 +7,7 @@ module.exports.up = (knex) => {
       table.string('title', 1024);
       table.text('content');
       table.integer('movieId').unsigned();
+      table.json('movie');
       table.integer('authorId').unsigned();
       table.tinyint('rating').defaultTo(10);
       table.timestamps(false, true);

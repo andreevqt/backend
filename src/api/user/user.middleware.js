@@ -5,24 +5,30 @@ const jwt = require('./jwt/jwt.service');
 const service = require('./user.service');
 const asyncHandler = require('express-async-handler');
 
-module.exports.authorize = asyncHandler(async (req, res, next) => {
+module.exports.authorize = (abortIfNotFound = true) => asyncHandler(async (req, res, next) => {
   const header = req.headers['authorization'] || '';
-  const authorization = header.split(' ')[1];
+  const authorization = header.replace('Bearer ', '');
   if (!authorization) {
-    return res.status(Http.UNAUTHROIZED).json({ success: false, message: 'Not authorzied' });
+    return abortIfNotFound
+      ? res.status(Http.UNAUTHROIZED).json({ success: false, message: 'Not authorzied' })
+      : next();
   }
 
   try {
     const { id } = jwt.verify(authorization);
     const user = await service.get(id);
     if (!user) {
-      return res.status(Http.UNAUTHROIZED).json({ success: false, message: 'Not authorzied' });
+      return abortIfNotFound
+        ? res.status(Http.UNAUTHROIZED).json({ success: false, message: 'Not authorzied' })
+        : next();
     }
 
     res.locals.currentUser = user;
     next();
   } catch (err) {
-    res.status(Http.FORBIDDEN).json({ success: false, message: 'Forbidden' });
+    return abortIfNotFound
+      ? res.status(Http.FORBIDDEN).json({ success: false, message: 'Forbidden' })
+      : next();
   }
 });
 

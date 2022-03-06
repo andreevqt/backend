@@ -1,15 +1,21 @@
 'use strict';
 
+const { ref } = require('objection');
 const Model = require('../../core/model');
-const Comment = require('../comment/comment.model');
 
 class Review extends Model {
   static get tableName() {
     return 'reviews';
   }
 
+  static get jsonAttributes() {
+    return ['movie'];
+  }
+
   static get relationMappings() {
     const User = require('../user/user.model');
+    const Comment = require('../comment/comment.model');
+    const Like = require('../like/like.model');
 
     return {
       author: {
@@ -37,14 +43,51 @@ class Review extends Model {
           from: 'reviews.id',
           to: 'comments.commentableId'
         }
+      },
+
+      likes: {
+        relation: Model.HasManyRelation,
+        modelClass: Like,
+
+        filter: (builder) => {
+          builder.where('likeableType', 'Review');
+        },
+
+        beforeInsert: (model) => {
+          model.likeableType = 'Review';
+        },
+
+        join: {
+          from: 'reviews.id',
+          to: 'likes.likeableId'
+        }
       }
     };
   }
 
   static get modifiers() {
+    const Like = require('../like/like.model');
+
     return {
-      default: (query) => {
-        return query.withGraphFetched('author(default)')
+      defaultSelect: (query, currentUserId) => {
+        return query
+          .withGraphFetched('[author(default)]')
+          .select([
+            'reviews.*',
+            Like.query()
+              .where('likeableId', ref('reviews.id'))
+              .where('likeableType', 'Review')
+              .count()
+              .as('likesCount'),
+            Like.query()
+              .skipUndefined()
+              .where('likeableId', ref('reviews.id'))
+              .where('likeableType', 'Review')
+              .where('authorId', currentUserId)
+              .where('likeableType', 'Review')
+              .count()
+              .as('liked')
+          ])
       }
     };
   }
@@ -56,8 +99,11 @@ class Review extends Model {
       content: this.content,
       author: this.author,
       movieId: this.movieId,
+      movie: this.movie,
       rating: this.rating,
-      createdAt: this.created_at
+      createdAt: this.created_at,
+      likesCount: this.likesCount,
+      liked: !!this.liked
     };
   }
 }

@@ -7,7 +7,7 @@ module.exports.create = (attrs) => {
 };
 
 module.exports.get = ({ page, perPage, ...rest }) => {
-  return Like.query().where(rest).page(page, perPage).withGraphFetched('author');
+  return Like.query().where(rest).withGraphFetched('author').page(page, perPage);
 };
 
 module.exports.drop = (query) => {

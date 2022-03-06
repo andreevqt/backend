@@ -68,7 +68,6 @@ module.exports = {
 
   getByAccess: asyncHandler(async (req, res) => {
     const { currentUser } = res.locals;
-    console.log('here');
     return res.status(Http.OK).json({ success: true, user: currentUser });
   }),
 
