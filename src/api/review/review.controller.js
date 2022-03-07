@@ -49,7 +49,7 @@ module.exports.comments = {
     const { review } = res.locals;
     const { page, perPage } = req.query;
     const results = await reviewService.comments.list(review.id, page, perPage);
-    res.status(Http.OK).json(results)
+    res.status(Http.OK).json(results);
   }),
 
   create: asyncHandler(async (req, res) => {

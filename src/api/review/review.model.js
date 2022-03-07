@@ -69,7 +69,7 @@ class Review extends Model {
     const Like = require('../like/like.model');
 
     return {
-      defaultSelect: (query, currentUserId) => {
+      defaultSelect: (query, currentUserId = -1) => {
         return query
           .withGraphFetched('[author(default)]')
           .select([
@@ -80,7 +80,6 @@ class Review extends Model {
               .count()
               .as('likesCount'),
             Like.query()
-              .skipUndefined()
               .where('likeableId', ref('reviews.id'))
               .where('likeableType', 'Review')
               .where('authorId', currentUserId)
@@ -88,6 +87,7 @@ class Review extends Model {
               .count()
               .as('liked')
           ])
+          .orderBy('created_at', 'desc');
       }
     };
   }
