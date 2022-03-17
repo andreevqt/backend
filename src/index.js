@@ -16,7 +16,7 @@ program.command('migrate')
   .option('-t, --type <migration_type>', 'migration type')
   .action(migrate);
 
-program.command('seed')
+program.command('seed [count]')
   .description('run seeders')
   .action(seed);
 
