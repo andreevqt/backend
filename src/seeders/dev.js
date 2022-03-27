@@ -139,7 +139,7 @@ module.exports.seed = async (knex) => {
 
     return ({
       title: shuffle(titles)[randomInt(0, titles.length - 1)],
-      content: shuffle(contents)[randomInt(0, contents.length - 1)],
+      content: shuffle(contents).slice(0, randomInt(1, contents.length)).join(''),
       movieId: shuffle(movieIds)[randomInt(0, movieIds.length - 1)],
       movie,
       authorId: shuffle(userIds)[randomInt(0, userIds.length - 1)],
