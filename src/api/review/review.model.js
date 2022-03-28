@@ -67,6 +67,7 @@ class Review extends Model {
 
   static get modifiers() {
     const Like = require('../like/like.model');
+    const Comment = require('../comment/comment.model');
 
     return {
       defaultSelect: (query, currentUserId = -1) => {
@@ -85,7 +86,12 @@ class Review extends Model {
               .where('authorId', currentUserId)
               .where('likeableType', 'Review')
               .count()
-              .as('liked')
+              .as('liked'),
+            Comment.query()
+              .where('commentableId', ref('reviews.id'))
+              .where('commentableType', 'Review')
+              .count()
+              .as('commentsCount')
           ])
           .orderBy('created_at', 'desc');
       }
@@ -102,6 +108,7 @@ class Review extends Model {
       movie: this.movie,
       rating: this.rating,
       createdAt: this.created_at,
+      commentsCount: this.commentsCount,
       likesCount: this.likesCount,
       liked: !!this.liked
     };

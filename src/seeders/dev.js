@@ -124,6 +124,7 @@ module.exports.seed = async (knex) => {
   await knex('users').truncate();
   await knex('genres').truncate();
   await knex('reviews').truncate();
+  await knex('comments').truncate();
 
   await knex('settings').insert({
     key: 'featured_movies',
@@ -136,15 +137,22 @@ module.exports.seed = async (knex) => {
   const reviews = [...Array(count).keys()].map(() => {
     const movieId = shuffle(movieIds)[randomInt(0, movieIds.length - 1)];
     const movie = movies.find(({ id }) => id === movieId);
-
     return ({
       title: shuffle(titles)[randomInt(0, titles.length - 1)],
-      content: shuffle(contents).slice(0, randomInt(1, contents.length)).join(''),
+      content: shuffle(contents).join(' '),
       movieId: shuffle(movieIds)[randomInt(0, movieIds.length - 1)],
       movie,
       authorId: shuffle(userIds)[randomInt(0, userIds.length - 1)],
       rating: randomInt(0, 10)
     });
   });
+
   await knex('reviews').insert(reviews);
+  const reviewIds = (await knex.select('id').from('reviews')).map(({ id }) => id);
+  await Promise.all(reviewIds.map((id) => knex('comments').insert({
+    content: shuffle(contents)[randomInt(0, contents.length - 1)],
+    commentableType: 'Review',
+    commentableId: id,
+    authorId: shuffle(userIds)[randomInt(0, userIds.length - 1)]
+  }))).catch((err) => console.log(err));
 };
