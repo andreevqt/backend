@@ -88,7 +88,6 @@ const genres = [
   { id: 37, name: "вестерн" }
 ];
 
-
 const titles = [
   'Как я попробовал фильм, и к чему привел этот необдуманный шаг',
   '17 дешевых и веселых идей для фильма',
@@ -149,10 +148,12 @@ module.exports.seed = async (knex) => {
 
   await knex('reviews').insert(reviews);
   const reviewIds = (await knex.select('id').from('reviews')).map(({ id }) => id);
-  await Promise.all(reviewIds.map((id) => knex('comments').insert({
-    content: shuffle(contents)[randomInt(0, contents.length - 1)],
-    commentableType: 'Review',
-    commentableId: id,
-    authorId: shuffle(userIds)[randomInt(0, userIds.length - 1)]
-  }))).catch((err) => console.log(err));
+  await Promise.all(reviewIds.map((id) => knex('comments')
+    .insert(Array.from(Array(randomInt(20, 60)).keys()).map(() => ({
+      content: shuffle(contents)[randomInt(0, contents.length - 1)],
+      commentableType: 'Review',
+      commentableId: id,
+      authorId: shuffle(userIds)[randomInt(0, userIds.length - 1)]
+    })))
+  ));
 };
