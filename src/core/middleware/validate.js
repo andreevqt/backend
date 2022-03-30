@@ -14,9 +14,9 @@ const getYupErrors = (err) => {
   return errors;
 };
 
-module.exports = (schema) => async (req, res, next) => {
+module.exports = (schema, where = 'body') => async (req, res, next) => {
   try {
-    req.body = await schema.validate(req.body, { abortEarly: false });
+    req[where] = await schema.validate(req[where], { abortEarly: false });
     next();
   } catch (err) {
     const errors = getYupErrors(err);

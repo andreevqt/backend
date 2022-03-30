@@ -13,5 +13,10 @@ module.exports = {
     title: Yup.string().min(3).max(1024),
     content: Yup.string(),
     rating: Yup.number().min(1).max(10)
+  }),
+
+  pagination: Yup.object({
+    page: Yup.number(),
+    perPage: Yup.number()
   })
 };

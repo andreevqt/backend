@@ -54,6 +54,6 @@ module.exports = (app) => {
 
   router
     .route('/:movieId/reviews')
-    .get(authorize(false), controller.reviews.list)
+    .get(authorize(false), validate(reviewValidator.pagination, 'query'), controller.reviews.list)
     .post(authorize(), validate(reviewValidator.create), controller.reviews.create);
 };

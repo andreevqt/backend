@@ -32,6 +32,6 @@ module.exports = (app) => {
 
   router
     .route('/:reviewId/comments')
-    .get(controller.comments.list)
+    .get(validate(commentValidator.pagination, 'query'), controller.comments.list)
     .post(authorize(), validate(commentValidator.create), controller.comments.create);
 };
