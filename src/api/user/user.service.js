@@ -1,30 +1,31 @@
 'use strict';
 
 const { UniqueViolationError } = require('objection');
-const repository = require('./user.repository');
+const userRepository = require('./user.repository');
+const likeService = require('../like/like.service');
 const jwt = require('./jwt/jwt.service');
 const { Http } = require('../../constants');
 const crypto = require('../../core/crypto');
 const imageService = require('../../core/image/image.service');
 
 module.exports.get = (id) => {
-  return repository.get(id);
+  return userRepository.get(id);
 };
 
 module.exports.list = (page, perPage) => {
-  return repository.list(page, perPage);
+  return userRepository.list(page, perPage);
 };
 
 module.exports.create = async (attrs) => {
   const { email, avatar } = attrs;
   const result = await imageService.process(avatar);
-  const user = await repository.create({ ...attrs, avatar: result });
+  const user = await userRepository.create({ ...attrs, avatar: result });
   const tokens = await jwt.generateTokens(email, user.getData());
   return { ...user.toJSON(), tokens };
 };
 
 module.exports.update = (id, attrs) => {
-  return repository.update(id, attrs);
+  return userRepository.update(id, attrs);
 };
 
 module.exports.logout = (token) => {
@@ -40,7 +41,7 @@ module.exports.refresh = async (token) => {
     return;
   }
 
-  const user = await repository.get(id);
+  const user = await userRepository.get(id);
   if (!user) {
     return;
   }
@@ -55,7 +56,7 @@ module.exports.checkPassword = (user, password) => {
 };
 
 module.exports.login = async (email, password) => {
-  const user = await repository.getByEmail(email);
+  const user = await userRepository.getByEmail(email);
   if (!user) {
     return;
   }
@@ -69,6 +70,10 @@ module.exports.login = async (email, password) => {
 
   const tokens = await jwt.generateTokens(email, user.getData());
   return { ...user.toJSON(), tokens };
+};
+
+module.exports.likes = (authorId, page, perPage) => {
+  return likeService.get({ authorId, likeableType: 'Review', page, perPage });
 };
 
 module.exports.checkDuplicateEmail = (err, req, res, next) => {

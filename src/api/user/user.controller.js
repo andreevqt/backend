@@ -90,5 +90,17 @@ module.exports = {
     };
 
     res.status(Http.OK).send({ success: true, message: 'Logout is successful' });
+  }),
+
+  likes: asyncHandler(async (req, res) => {
+    const { page, perPage } = req.query;
+    const { user } = res.locals;
+    const result = await service.likes(user.id, page, perPage);
+    
+    res.status(Http.OK).send(result);
+  }),
+
+  reviews: asyncHandler(async (req, res) => {
+
   })
 };

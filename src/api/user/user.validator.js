@@ -26,5 +26,10 @@ module.exports = {
 
   logout: Yup.object({
     token: Yup.string().required()
+  }),
+
+  pagination: Yup.object({
+    page: Yup.number(),
+    perPage: Yup.number()
   })
 };
