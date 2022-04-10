@@ -78,7 +78,10 @@ class User extends Model {
       name: this.name,
       email: this.email,
       image: this.image,
-      reviewsCount: this.reviewsCount
+      reviewsCount: this.reviewsCount,
+      vk: this.vk,
+      facebook: this.facebook,
+      telegram: this.telegram
     }
   }
 }

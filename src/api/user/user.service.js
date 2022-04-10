@@ -7,6 +7,17 @@ const { Http } = require('../../constants');
 const crypto = require('../../core/crypto');
 const imageService = require('../../core/image/image.service');
 
+const thumbnailsToGenerate = {
+  thumbnail: {
+    width: 64,
+    height: 64
+  },
+  thumbnailLarge: {
+    width: 128,
+    height: 128
+  }
+};
+
 module.exports.get = (id) => {
   return repository.get(id);
 };
@@ -17,7 +28,7 @@ module.exports.list = (page, perPage) => {
 
 module.exports.create = async (attrs) => {
   const { email, avatar } = attrs;
-  const result = await imageService.process(avatar);
+  const result = await imageService.process(avatar, thumbnailsToGenerate);
   const user = await repository.create({ ...attrs, avatar: result });
   const tokens = await jwt.generateTokens(email, user.getData());
   return { ...user.toJSON(), tokens };

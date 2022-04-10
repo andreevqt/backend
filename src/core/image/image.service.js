@@ -1,16 +1,8 @@
 'use strict';
 
-// taken from strapi image-manipulation
-
 const sharp = require('sharp');
 const path = require('path');
 const config = require('../../config');
-
-const thumbnailSizes = {
-  width: 245,
-  height: 156,
-  fit: 'inside'
-};
 
 const uploadPath = path.resolve(__dirname, '../../public/uploads');
 const uploadUrl = `${config.get('app.fullUrl')}/uploads`;
@@ -34,28 +26,26 @@ const resizeTo = (buffer, name, options) => sharp(buffer)
   .toFile(`${uploadPath}/${name}`)
   .catch(() => null);
 
-const generateThumbnail = async (file) => {
+const generateThumbnail = async (file, dimension) => {
   const { width, height } = await getDimensions(file.buffer);
-  if (width > thumbnailSizes.width || height > thumbnailSizes.height) {
-    const name = `thumbnail_${file.name}`;
-    const res = await resizeTo(file.buffer, `${name}${file.ext}`, thumbnailSizes);
+  if (width > dimension.width || height > dimension.height) {
+    const name = `thumbnail_${dimension.width}x${dimension.height}_${file.name}`;
+    const res = await resizeTo(file.buffer, name, dimension);
     if (res) {
       const { width, height, size } = res;
       return {
         name,
-        path: file.path,
-        ext: file.ext,
+        mimetype: file.mimetype,
         width,
         height,
         size: bytesToKbytes(size),
-        url: `${uploadUrl}/${name}`,
-        mimetype: file.mimetype
+        url: `${uploadUrl}/${name}`
       };
     }
   }
 };
 
-module.exports.process = async (file) => {
+module.exports.process = async (file, formatsToGenerate = {}) => {
   if (!file) {
     return;
   }
@@ -64,28 +54,28 @@ module.exports.process = async (file) => {
   const { mimetype } = file;
   const ext = getExt(file);
 
-  const name = `${Date.now()}-${Math.round(Math.random() * 1E9)}`;
-  const url = `${uploadUrl}/${name}${ext}`;
+  const name = `${Date.now()}-${Math.round(Math.random() * 1E9)}${ext}`;
+  const url = `${uploadUrl}/${name}`;
 
-  await sharp(file.buffer).toFile(`${uploadPath}/${name}${ext}`);
+  await sharp(file.buffer).toFile(`${uploadPath}/${name}`);
 
   file.name = name;
   file.path = uploadPath;
   file.ext = ext;
 
-  const thumbnail = await generateThumbnail(file);
+  const formats = {};
+  await Promise.all(Object.keys(formatsToGenerate).map(async (format) => {
+    const result = await generateThumbnail(file, formatsToGenerate[format]);
+    formats[format] = result;
+  }));
 
   return {
+    name,
     url,
     width,
     height,
     size: bytesToKbytes(size),
-    name,
-    path: uploadPath,
-    ext,
     mimetype,
-    formats: {
-      thumbnail
-    }
+    formats
   };
 };

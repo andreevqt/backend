@@ -6,13 +6,19 @@ module.exports = {
   create: Yup.object({
     name: Yup.string().required(),
     password: Yup.string().required(),
-    email: Yup.string().email().required()
+    email: Yup.string().email().required(),
+    vk: Yup.string(),
+    facebook: Yup.string(),
+    telegram: Yup.string()
   }),
 
   update: Yup.object({
     name: Yup.string(),
     password: Yup.string(),
-    email: Yup.string().email()
+    email: Yup.string().email(),
+    vk: Yup.string(),
+    facebook: Yup.string(),
+    telegram: Yup.string()
   }),
 
   token: Yup.object({
