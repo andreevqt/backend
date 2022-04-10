@@ -35,4 +35,8 @@ module.exports = (app) => {
     .route('/:userId')
     .get(controller.get)
     .put(authorize(), isCurrentUser, validate(validator.update), controller.update);
+
+  router
+    .route('/:userId/likes')
+    .get(validate(validator.pagination), controller.likes);
 };

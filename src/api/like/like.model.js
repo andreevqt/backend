@@ -25,6 +25,8 @@ class Like extends Model {
   toJSON() {
     return {
       id: this.id,
+      likeableId: this.likeableId,
+      likeableType: this.likeableType,
       author: this.author
     };
   }
