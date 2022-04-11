@@ -4,8 +4,10 @@ const { Router } = require('express');
 const controller = require('./user.controller');
 const validator = require('./user.validator');
 const { validate, decodeJSON } = require('../../core/middleware');
-const { upload } = require('../../core/image/image.middleware')
+const { createUpload } = require('../../core/image/image.middleware')
 const { authorize, isCurrentUser } = require('./user.middleware');
+
+const upload = createUpload();
 
 const router = new Router();
 
@@ -17,7 +19,7 @@ module.exports = (app) => {
   router
     .route('/')
     .get(authorize(), controller.getByAccess)
-    .post(upload.single('avatar'), validate(validator.create), controller.create);
+    .post(upload('image'), validate(validator.create), controller.create);
 
   router
     .route('/token')
@@ -34,7 +36,7 @@ module.exports = (app) => {
   router
     .route('/:userId')
     .get(controller.get)
-    .post(authorize(), upload.single('avatar'), isCurrentUser, decodeJSON('body.attrs'), validate(validator.update, 'body.attrs'), controller.update);
+    .post(authorize(), upload('image'), isCurrentUser, decodeJSON('body.attrs'), validate(validator.update, 'body.attrs'), controller.update);
 
   router
     .route('/:userId/likes')

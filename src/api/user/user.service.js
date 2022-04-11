@@ -28,17 +28,17 @@ module.exports.list = (page, perPage) => {
 };
 
 module.exports.create = async (attrs) => {
-  const { avatar, ...rest } = attrs;
-  const image = await imageService.process(avatar, thumbnailsToGenerate);
-  const user = await userRepository.create({ ...rest, image });
+  const { image, ...rest } = attrs;
+  const processed = await imageService.process(image, thumbnailsToGenerate);
+  const user = await userRepository.create({ image: processed, ...rest });
   const tokens = await jwt.generateTokens(user.email, user.getData());
   return { ...user.toJSON(), tokens };
 };
 
 module.exports.update = async (id, attrs) => {
-  const { avatar, ...rest } = attrs;
-  const image = await imageService.process(avatar, thumbnailsToGenerate);
-  return userRepository.update(id, { image, ...rest });
+  const { image, ...rest } = attrs;
+  const processed = await imageService.process(image, thumbnailsToGenerate);
+  return userRepository.update(id, { image: processed, ...rest });
 };
 
 module.exports.logout = (token) => {

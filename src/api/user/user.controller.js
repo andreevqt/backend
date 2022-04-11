@@ -34,10 +34,10 @@ module.exports = {
 
   create: asyncHandler(async (req, res, next) => {
     const { attrs } = req.body;
-    const avatar = req.file;
+    const image = req.file;
 
     try {
-      const user = await service.create({ avatar, ...attrs });
+      const user = await service.create({ image, ...attrs });
       res.status(Http.CREATED).json({ success: true, user });
     } catch (err) {
       service.checkDuplicateEmail(err, req, res, next);
@@ -48,9 +48,9 @@ module.exports = {
     const { user } = res.locals;
 
     const { attrs } = req.body;
-    const avatar = req.file;
+    const image = req.file;
 
-    const updated = await service.update(user.id, { avatar, ...attrs });
+    const updated = await service.update(user.id, { image, ...attrs });
     res.status(Http.OK).json({ success: true, user: updated });
   }),
 

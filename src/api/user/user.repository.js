@@ -25,11 +25,12 @@ module.exports.create = async ({ image, ...rest }) => {
 
 module.exports.update = async (id, { image, ...rest }) => {
   const user = await User.query().modify('default').patchAndFetchById(id, rest);
+  console.log(typeof image);
   if (image) {
     await user.$relatedQuery('image').insert(image);
-  } else if (typeof image !== undefined) {
+  } /* else if (typeof image !== 'undefined') {
     await user.$relatedQuery('image').delete();
-  }
+  } */
 
   return user.$query().modify('default');
 };
