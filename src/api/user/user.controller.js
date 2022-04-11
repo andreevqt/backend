@@ -33,7 +33,7 @@ module.exports = {
   }),
 
   create: asyncHandler(async (req, res, next) => {
-    const attrs = req.body;
+    const { attrs } = req.body;
     const avatar = req.file;
 
     try {
@@ -46,9 +46,11 @@ module.exports = {
 
   update: asyncHandler(async (req, res) => {
     const { user } = res.locals;
-    const attrs = req.body;
 
-    const updated = await service.update(user.id, attrs);
+    const { attrs } = req.body;
+    const avatar = req.file;
+
+    const updated = await service.update(user.id, { avatar, ...attrs });
     res.status(Http.OK).json({ success: true, user: updated });
   }),
 
@@ -96,7 +98,7 @@ module.exports = {
     const { page, perPage } = req.query;
     const { user } = res.locals;
     const result = await service.likes(user.id, page, perPage);
-    
+
     res.status(Http.OK).send(result);
   }),
 

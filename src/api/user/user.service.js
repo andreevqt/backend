@@ -28,20 +28,22 @@ module.exports.list = (page, perPage) => {
 };
 
 module.exports.create = async (attrs) => {
-  const { email, avatar } = attrs;
-  const result = await imageService.process(avatar, thumbnailsToGenerate);
-  const user = await userRepository.create({ ...attrs, avatar: result });
-  const tokens = await jwt.generateTokens(email, user.getData());
+  const { avatar, ...rest } = attrs;
+  const image = await imageService.process(avatar, thumbnailsToGenerate);
+  const user = await userRepository.create({ ...rest, image });
+  const tokens = await jwt.generateTokens(user.email, user.getData());
   return { ...user.toJSON(), tokens };
 };
 
-module.exports.update = (id, attrs) => {
-  return userRepository.update(id, attrs);
+module.exports.update = async (id, attrs) => {
+  const { avatar, ...rest } = attrs;
+  const image = await imageService.process(avatar, thumbnailsToGenerate);
+  return userRepository.update(id, { image, ...rest });
 };
 
 module.exports.logout = (token) => {
   return jwt.drop(undefined, token);
-}
+};
 
 // if it throws then forbidden
 module.exports.refresh = async (token) => {

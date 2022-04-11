@@ -3,7 +3,7 @@
 const { Router } = require('express');
 const controller = require('./user.controller');
 const validator = require('./user.validator');
-const { validate } = require('../../core/middleware');
+const { validate, decodeJSON } = require('../../core/middleware');
 const { upload } = require('../../core/image/image.middleware')
 const { authorize, isCurrentUser } = require('./user.middleware');
 
@@ -34,7 +34,7 @@ module.exports = (app) => {
   router
     .route('/:userId')
     .get(controller.get)
-    .put(authorize(), isCurrentUser, validate(validator.update), controller.update);
+    .post(authorize(), upload.single('avatar'), isCurrentUser, decodeJSON('body.attrs'), validate(validator.update, 'body.attrs'), controller.update);
 
   router
     .route('/:userId/likes')
