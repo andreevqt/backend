@@ -13,7 +13,7 @@ class MigratorBase {
 
   async init() {
     if (!this.isInitialized) {
-      this.knex = await initKnex(this, this.userParams);
+      this.knex = await initKnex();
       this.isInitialized = true;
     }
   }

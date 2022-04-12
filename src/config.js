@@ -54,6 +54,10 @@ const config = {
     key: getString(process.env.MOVIE_DB_KEY),
     lang: getString(process.env.MOVIE_DB_LANG, 'ru')
   },
+  scrapper: {
+    rucaptchaKey: getString(process.env.RUCAPTCHA_KEY),
+    headless: getBool(process.env.SCRAPPER_HEADLESS, false)
+  },
   jwt: {
     expiresIn: getString(process.env.JWT_EXPIRES_IN, '15m')
   }

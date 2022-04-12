@@ -11,7 +11,8 @@
     "migrate": "node ./src/index.js migrate --type=migrate",
     "migrate::refresh": "node ./src/index.js migrate --type=refresh",
     "generate::secret": "node ./src/index.js secret",
-    "seed": "node ./src/index.js seed 100"
+    "seed": "node ./src/index.js seed 100",
+    "scrape": "node ./src/index.js scrape"
   },
   "keywords": [],
   "author": "",
@@ -35,6 +36,9 @@
     "objection": "3.0.1",
     "pino": "6.3.2",
     "pino-pretty": "4.0.0",
+    "puppeteer": "13.5.2",
+    "puppeteer-extra": "3.2.3",
+    "puppeteer-extra-plugin-stealth": "2.9.0",
     "sharp": "0.30.0",
     "yup": "0.32.11"
   }
