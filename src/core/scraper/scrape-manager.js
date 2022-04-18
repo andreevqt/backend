@@ -2,9 +2,9 @@
 
 const chalk = require('chalk');
 const browser = require('./browser');
-const movieScrapper = require('./movie-scrapper');
-const crewScrapper = require('./crew-scrapper');
-const personScrapper = require('./person-scrapper');
+const movieScrapper = require('./movie-scraper');
+const crewScrapper = require('./crew-scraper');
+const personScrapper = require('./person-scraper');
 const Captcha = require('./captcha');
 const initKnex = require('../database');
 const globalScript = require('./global-script');

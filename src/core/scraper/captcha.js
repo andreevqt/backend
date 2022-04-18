@@ -13,7 +13,7 @@ const MAX_RESOLVE_TRIES = 3;
 
 class Captcha {
   constructor() {
-    const apiKey = config.get('scrapper.rucaptchaKey');
+    const apiKey = config.get('scraper.rucaptchaKey');
     if (!apiKey) {
       throw Error('Rucaptcha key is missing');
     }
