@@ -4,5 +4,6 @@ module.exports = {
   migrate: require('./migrate'),
   serve: require('./serve'),
   seed: require('./seed'),
-  secret: require('./secret')
+  secret: require('./secret'),
+  scrape: require('./scrape')
 };

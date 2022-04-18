@@ -2,7 +2,7 @@
 
 const { program } = require('commander');
 const pkg = require('../package.json');
-const { serve, migrate, seed, secret } = require('./commands');
+const { serve, migrate, seed, secret, scrape } = require('./commands');
 
 program.version(pkg.version);
 
@@ -23,5 +23,9 @@ program.command('seed [count]')
 program.command('secret')
   .description('generate app key')
   .action(secret);
+
+program.command('scrape')
+  .description('scrape kinopoisk')
+  .action(scrape);
 
 program.parse(process.argv);
