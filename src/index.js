@@ -2,7 +2,7 @@
 
 const { program } = require('commander');
 const pkg = require('../package.json');
-const { serve, migrate, seed, secret, scrape } = require('./commands');
+const { serve, migrate, seed, secret, scrape, rotate } = require('./commands');
 
 program.version(pkg.version);
 
@@ -27,5 +27,9 @@ program.command('secret')
 program.command('scrape')
   .description('scrape kinopoisk')
   .action(scrape);
+
+program.command('rotate')
+  .description('start proxy rotation server')
+  .action(rotate);
 
 program.parse(process.argv);

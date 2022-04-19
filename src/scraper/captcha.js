@@ -1,10 +1,9 @@
 'use strict';
 
 const axios = require('axios');
-const config = require('../../config');
-const { timeout } = require('../../utils');
-const Queue = require('./queue');
-const logger = require('../../logger');
+const config = require('../config');
+const { timeout } = require('../utils');
+const logger = require('../logger');
 
 const CAPTCHA_NOT_READY = 'CAPCHA_NOT_READY';
 const ERROR_CAPTCHA_UNSOLVABLE = 'ERROR_CAPTCHA_UNSOLVABLE';
@@ -20,7 +19,6 @@ class Captcha {
     }
     this._apiKey = apiKey;
     this._baseUrl = 'http://rucaptcha.com';
-    this._focusQueue = new Queue(1);
   }
 
   async prepareImage(src) {
@@ -35,7 +33,6 @@ class Captcha {
 
   async _handle(page) {
     logger.info('Captcha challenge started!!');
-    await this._focus(page);
     await page.click('input[type="submit"]');
 
     while (true) {
@@ -54,7 +51,6 @@ class Captcha {
         continue;
       } catch (err) {
         logger.info('Captcha resolved');
-        await this._unfocus(page);
         // no error just break
         break;
       }
@@ -66,15 +62,6 @@ class Captcha {
     if (isCaptcha) {
       await this._handle(page);
     }
-  }
-
-  async _focus(page) {
-    await this._focusQueue.enqueue(page);
-    await page.bringToFront();
-  }
-
-  async _unfocus() {
-    return this._focusQueue.dequeue();
   }
 
   async _solve(src) {

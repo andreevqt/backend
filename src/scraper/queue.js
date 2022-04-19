@@ -20,16 +20,14 @@ class Queue {
   }
 
   async dequeue() {
-    await waitUntil(() => this._items.length !== 0);
     return this._items.shift();
   }
 
-  getLength() {
+  get length() {
     return this._items.length;
   }
 
   async enqueue(item) {
-    await waitUntil(() => this._items.length < Math.floor(this._capacity));
     this._items.push(item);
   }
 }

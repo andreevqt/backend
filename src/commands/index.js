@@ -5,5 +5,6 @@ module.exports = {
   serve: require('./serve'),
   seed: require('./seed'),
   secret: require('./secret'),
-  scrape: require('./scrape')
+  scrape: require('./scrape'),
+  rotate: require('./rotate')
 };
