@@ -11,7 +11,7 @@ const globalScript = require('./global-script');
 const Queue = require('./queue');
 
 class ScrapeManager {
-  constructor(browserConfig) {
+  constructor(browserConfig, capacity = 50) {
     this._isInitialized = false;
     this._browserConfig = browserConfig;
     this._captcha = new Captcha();
@@ -23,9 +23,9 @@ class ScrapeManager {
     this._crewPage = null;
     this._personPage = null;
     this._filtersPage = null;
-    this._personQueue = new Queue(50);
-    this._movieQueue = new Queue(50);
-    this._crewQueue = new Queue(50);
+    this._personQueue = new Queue(capacity);
+    this._movieQueue = new Queue(capacity);
+    this._crewQueue = new Queue(capacity);
   }
 
   async init() {
@@ -114,7 +114,6 @@ class ScrapeManager {
       const lastPage = await this._getLastPage();
       console.log(chalk.green(`Total pages are ${lastPage}`));
       // start workers
-      // crewScrapper.scrape(this);
       const tasks = [
         movieScrapper.run(this),
         crewScrapper.run(this),

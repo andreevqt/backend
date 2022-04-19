@@ -7,8 +7,7 @@ const config = require('../config');
 module.exports = async () => {
   const scrapper = new ScrapeManager({
     headless: config.get('scraper.headless'),
-    queueCapacity: config.get('scraper.queueCapacity')
-  });
+  }, config.get('scraper.queueCapacity'));
 
   try {
     await scrapper.init();

@@ -8,6 +8,7 @@ const Queue = require('./queue');
 
 const CAPTCHA_NOT_READY = 'CAPCHA_NOT_READY';
 const ERROR_CAPTCHA_UNSOLVABLE = 'ERROR_CAPTCHA_UNSOLVABLE';
+const ERROR_NO_SLOT_AVAILABLE = 'ERROR_NO_SLOT_AVAILABLE';
 const RESOLVE_INTERVAL = 5000;
 const MAX_RESOLVE_TRIES = 3;
 
@@ -93,7 +94,7 @@ class Captcha {
       result = await this._res(id);
 
       if (result.status === 0) {
-        if (result.request === CAPTCHA_NOT_READY) {
+        if (result.request === CAPTCHA_NOT_READY || result.request === ERROR_NO_SLOT_AVAILABLE) {
           await timeout(RESOLVE_INTERVAL);
           continue;
         }
