@@ -78,9 +78,17 @@ class Captcha {
   }
 
   async _solve(src) {
-    const input = await this._in(src);
-    if (input.status !== 1) {
-      throw Error(input.request);
+    let input;
+    while (true) {
+      input = await this._in(src);
+      if (input.status !== 1) {
+        if (input.request === ERROR_NO_SLOT_AVAILABLE) {
+          await timeout(RESOLVE_INTERVAL);
+          continue;
+        }
+        throw Error(input.request);
+      }
+      break;
     }
     // wait fo 5 seconds
     await timeout(RESOLVE_INTERVAL);
@@ -94,7 +102,7 @@ class Captcha {
       result = await this._res(id);
 
       if (result.status === 0) {
-        if (result.request === CAPTCHA_NOT_READY || result.request === ERROR_NO_SLOT_AVAILABLE) {
+        if (result.request === CAPTCHA_NOT_READY) {
           await timeout(RESOLVE_INTERVAL);
           continue;
         }
