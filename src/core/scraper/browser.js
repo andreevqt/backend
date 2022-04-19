@@ -1,10 +1,7 @@
 'use strict';
 
 const chalk = require('chalk');
-const puppeteer = require('puppeteer-extra');
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-
-puppeteer.use(StealthPlugin());
+const playwright = require('@playwright/test');
 
 const defaultConfig = {
   headless: false,
@@ -16,7 +13,7 @@ const start = async (config) => {
   let browser;
   try {
     console.log(chalk.green('Opening the browser...'));
-    browser = await puppeteer.launch({ ...defaultConfig, ...config });
+    browser = await playwright.firefox.launch({ ...defaultConfig, ...config });
   } catch (err) {
     console.log(chalk.red('Could not create a browser instance'), err);
     throw err;
