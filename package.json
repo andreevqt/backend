@@ -12,7 +12,7 @@
     "migrate::refresh": "node ./src/index.js migrate --type=refresh",
     "generate::secret": "node ./src/index.js secret",
     "seed": "node ./src/index.js seed 100",
-    "scrape": "node ./src/index.js scrape"
+    "scrape": "cross-env NODE_ENV=production node ./src/index.js scrape"
   },
   "keywords": [],
   "author": "",

@@ -9,6 +9,7 @@ const Captcha = require('./captcha');
 const initKnex = require('../database');
 const globalScript = require('./global-script');
 const Queue = require('./queue');
+const logger = require('../../logger');
 
 class ScrapeManager {
   constructor(browserConfig, capacity = 50) {
@@ -112,7 +113,7 @@ class ScrapeManager {
       await this.goto(this._filtersPage, '/lists/movies/', { page: this._currentPage });
 
       const lastPage = await this._getLastPage();
-      console.log(chalk.green(`Total pages are ${lastPage}`));
+      logger.info(`Total pages are ${lastPage}`);
       // start workers
       const tasks = [
         movieScrapper.run(this),
@@ -136,7 +137,7 @@ class ScrapeManager {
       console.log(chalk.green('Scrapping done!'));
       console.log(chalk.gray(`Scrapped ${movies.length} movies`));
     } catch (err) {
-      console.log(chalk.red(`current page is ${this._currentPage}`));
+      console.log(chalk.red(`Error!!! Current page is ${this._currentPage}`));
       console.log(chalk.red(err));
       await this._saveState();
       throw err;

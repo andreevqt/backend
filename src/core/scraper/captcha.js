@@ -1,10 +1,10 @@
 'use strict';
 
 const axios = require('axios');
-const chalk = require('chalk');
 const config = require('../../config');
 const { timeout } = require('../../utils');
 const Queue = require('./queue');
+const logger = require('../../logger');
 
 const CAPTCHA_NOT_READY = 'CAPCHA_NOT_READY';
 const ERROR_CAPTCHA_UNSOLVABLE = 'ERROR_CAPTCHA_UNSOLVABLE';
@@ -34,7 +34,7 @@ class Captcha {
   }
 
   async _handle(page) {
-    console.log(chalk.blue('Captcha challenge started!!'));
+    logger.info('Captcha challenge started!!');
     await this._focus(page);
     await page.click('input[type="submit"]');
 
@@ -53,7 +53,7 @@ class Captcha {
         // continue if no error tip element
         continue;
       } catch (err) {
-        console.log(chalk.blue('Captcha resolved'));
+        logger.info('Captcha resolved');
         await this._unfocus(page);
         // no error just break
         break;

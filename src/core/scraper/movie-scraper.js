@@ -1,6 +1,7 @@
 'use strict';
 
 const chalk = require('chalk');
+const logger = require('../../logger');
 
 const script = () => {
   const { extractValue, extractArray } = window.scrapper.table;
@@ -130,7 +131,7 @@ const run = async (manager) => {
     const { movie, countries, genres } = await moviePage.evaluate(script);
     await upsert(movie, countries, genres);
 
-    console.log(chalk.green(`Movies processed ${count}\r`));
+    logger.info(`Processed movie ${movie.id}. Total movies processed ${count}`);
     count++;
   }
 };

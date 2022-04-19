@@ -1,9 +1,13 @@
 'use strict';
 
 const chalk = require('chalk');
+const logger = require('../../logger');
 
 const script = () => {
   const { extractValue, extractArray } = window.scrapper.table;
+  const { getId } = window.scrapper.page;
+
+  const id = getId();
 
   const elName = document.querySelector('[class^="styles_primaryName"]');
   const name = elName && elName.textContent;
@@ -18,6 +22,7 @@ const script = () => {
   const photo = elPhoto && elPhoto.src;
 
   return {
+    id,
     name,
     photo,
     originalName,
@@ -44,7 +49,7 @@ const run = async (manager) => {
     const person = await personPage.evaluate(script);
     await upsert(person);
     count++;
-    console.log(chalk.yellow(`Persons processed ${count}`));
+    logger.info(`Processed person ${person.id}. Total persons processed ${count}`);
   }
 };
 
