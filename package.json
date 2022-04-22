@@ -12,7 +12,9 @@
     "migrate::refresh": "node ./src/index.js migrate --type=refresh",
     "generate::secret": "node ./src/index.js secret",
     "seed": "node ./src/index.js seed 100",
-    "scrape": "cross-env NODE_ENV=production node ./src/index.js scrape"
+    "scrape": "cross-env NODE_ENV=production node ./src/index.js scrape",
+    "scrape::debug": "cross-env NODE_ENV=debug node ./src/index.js scrape",
+    "rotate": "node ./src/index.js rotate"
   },
   "keywords": [],
   "author": "",
@@ -31,12 +33,18 @@
     "jsonwebtoken": "8.5.1",
     "knex": "1.0.1",
     "lodash": "4.17.21",
+    "ms": "2.1.3",
     "multer": "1.4.4",
     "mysql": "2.18.1",
     "nodemon": "2.0.15",
     "objection": "3.0.1",
     "pino": "6.3.2",
     "pino-pretty": "4.0.0",
+    "proxy-chain": "1.0.4",
+    "puppeteer": "13.5.2",
+    "puppeteer-cluster": "^0.23.0",
+    "puppeteer-extra": "3.2.3",
+    "puppeteer-extra-plugin-stealth": "2.9.0",
     "sharp": "0.30.0",
     "yup": "0.32.11"
   }

@@ -5,7 +5,9 @@ const pino = require('pino');
 const options = {
   name: 'pino-and-express',
   level: process.env.LOG_LEVEL || 'info',
-  prettyPrint: true,
+  prettyPrint: {
+    translateTime: 'SYS:standard'
+  },
   forceColor: true,
   timestamps: true
 };

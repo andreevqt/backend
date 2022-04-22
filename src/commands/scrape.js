@@ -1,20 +1,12 @@
 'use strict';
 
 const chalk = require('chalk');
-const ScrapeManager = require('../core/scraper/scrape-manager');
-const config = require('../config');
+const cluster = require('../scraper/cluster');
 
 module.exports = async () => {
-  const scrapper = new ScrapeManager({
-    headless: config.get('scraper.headless'),
-  }, config.get('scraper.queueCapacity'));
-
   try {
-    await scrapper.init();
-    await scrapper.run();
+    await cluster.run();
   } catch (err) {
     console.log(chalk.red(err));
-  } finally {
-    await scrapper.destroy();
   }
 };

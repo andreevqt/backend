@@ -3,6 +3,7 @@
 require('dotenv').config();
 
 const _ = require('lodash');
+const ms = require('ms');
 
 const getBool = (envVar, defaultValue) => {
   if (_.isBoolean(envVar)) {
@@ -19,6 +20,14 @@ const getBool = (envVar, defaultValue) => {
 
 const getString = (envVar, defaultValue) => {
   return envVar || defaultValue;
+};
+
+const getList = (envVar, defaultValue) => {
+  return envVar ? envVar.split(',') : defaultValue;
+};
+
+const getTime = (envVar, defaultValue) => {
+  return envVar ? ms(envVar) : ms(defaultValue)
 };
 
 const getInteger = (envVar, defaultValue) => {
@@ -56,8 +65,15 @@ const config = {
   },
   scraper: {
     rucaptchaKey: getString(process.env.RUCAPTCHA_KEY),
+    proxy: getString(process.env.SCRAPER_PROXY),
     headless: getBool(process.env.SCRAPER_HEADLESS, true),
-    queueCapacity: getInteger(process.env.SCRAPER_QUEUE_CAPACITY, 100)
+    queueCapacity: getInteger(process.env.SCRAPER_QUEUE_CAPACITY, 100),
+    maxConcurrency: getInteger(process.env.SCRAPER_MAX_CONCURRENCY, 4)
+  },
+  rotator: {
+    proxyList: getList(process.env.ROTATOR_PROXY_LIST),
+    port: getString(process.env.ROTATOR_PORT, 8000),
+    frequency: getTime(process.env.ROTATOR_FREQUENCY, '15m')
   },
   jwt: {
     expiresIn: getString(process.env.JWT_EXPIRES_IN, '15m')
