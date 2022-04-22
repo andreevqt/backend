@@ -36,6 +36,10 @@ class MovieTable extends BaseTable {
   }
 
   async upsert(movie, countries = [], genres = []) {
+    if (!movie) {
+      return;
+    }
+
     for (let i = 0; i < countries.length; i++) {
       const country = countries[i];
       await this._addCountry(movie.id, country);

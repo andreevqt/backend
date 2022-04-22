@@ -22,7 +22,7 @@ const getMovieId = (url) => {
 };
 
 const main = (manager) => async ({ page, data }) => {
-  logger.info('Scrapping data...');
+  logger.info('Scraping data...');
   await timeout();
   await page.goto('https://kinopoisk.ru/lists/movies', { waitUntil: 'domcontentloaded' });
 

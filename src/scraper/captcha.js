@@ -41,7 +41,7 @@ class Captcha {
       const src = await page.$eval('.AdvancedCaptcha-Image', (el) => el.src);
       const result = await this._solve(src);
 
-      await page.fill('.Textinput-Control', result);
+      await page.type('.Textinput-Control', result);
       await page.click('button[type="submit"]');
       // wait for error message
       try {

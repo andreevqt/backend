@@ -58,7 +58,7 @@ class ClusterManager {
     this.page = page;
 
     this.cluster.on('taskerror', async (err, data) => {
-      logger.error(`error: ${err.toString()}, data: ${data}`);
+      logger.error(`error: ${err} ${err.stack}, data: ${data}`);
       await this._saveState({ page: this.page });
     });
 
