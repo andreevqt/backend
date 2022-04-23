@@ -8,7 +8,6 @@ const config = require('../config');
 const createKnex = require('../core/database');
 const Captcha = require('./captcha');
 const logger = require('../logger');
-const Queue = require('./queue');
 
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());

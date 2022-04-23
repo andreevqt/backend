@@ -2,9 +2,9 @@
 
 const movieTask = require('./movies');
 const crewTask = require('./crew');
-const personTask = require('./person');
 const logger = require('../../logger');
 const timeout = require('../timeout');
+const rejectIfTimeout = require('../reject-if-timeout');
 
 const extractLinks = async (page) => {
   return page.$$eval('a[href]', (links) => links
@@ -24,7 +24,7 @@ const getMovieId = (url) => {
 const main = (manager) => async ({ page, data }) => {
   logger.info('Scraping data...');
   await timeout();
-  await page.goto('https://kinopoisk.ru/lists/movies', { waitUntil: 'domcontentloaded' });
+  await rejectIfTimeout(page.goto('https://kinopoisk.ru/lists/movies', { waitUntil: 'domcontentloaded' }));
 
   // handle captcha
   await manager.captcha.handle(page);
