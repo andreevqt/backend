@@ -12,7 +12,7 @@ const logger = require('../logger');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
 
-const TIMEOUT = 0x7FFFFFFF;
+const TIMEOUT = 1800000;
 
 class ClusterManager {
   constructor() {
@@ -31,7 +31,7 @@ class ClusterManager {
 
     this.knex = await createKnex();
 
-    const args = [];
+    const args = ['--no-sandbox', '--disable-setuid-sandbox'];
     const proxyUrl = config.get('scraper.proxy');
     if (proxyUrl) {
       this._newProxyUrl = await proxyChain.anonymizeProxy(proxyUrl);
