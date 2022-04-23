@@ -10,8 +10,11 @@ const rejectIfTimeout = async (
 ) => {
   const p = cancelable(promise);
 
+  let timeoutId;
   const checkTimeout = new Promise(
-    (resolve) => setTimeout(() => resolve('timeout'), timeout)
+    (resolve) => {
+      timeoutId = setTimeout(() => resolve('timeout'), timeout);
+    }
   );
 
   const result = await Promise.race([
@@ -20,6 +23,7 @@ const rejectIfTimeout = async (
   ]);
 
   if (result !== 'timeout') {
+    clearTimeout(timeoutId);
     return result;
   }
 

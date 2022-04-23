@@ -37,7 +37,7 @@ const main = (manager) => async ({ page, data }) => {
   for (; manager.page <= lastPage; manager.page++) {
     logger.info(`Scraping page ${manager.page}`);
     await timeout();
-    await page.goto(`https://kinopoisk.ru/lists/movies/?page=${manager.page}`, { waitUntil: 'domcontentloaded' });
+    await rejectIfTimeout(page.goto(`https://kinopoisk.ru/lists/movies/?page=${manager.page}`, { waitUntil: 'domcontentloaded' }));
     await manager.captcha.handle(page);
     const links = await extractLinks(page);
 
