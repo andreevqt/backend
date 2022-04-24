@@ -63,11 +63,11 @@ const extractor = (command) => {
       const age = extractValue('Возраст', (row) => row.querySelector('span').textContent);
       const duration = extractValue('Время');
 
-      const ratingEl = document.querySelector('.film-rating-value');
-      const rating = ratingEl && +ratingEl.textContent;
+      const $rating = document.querySelector('.film-rating-value');
+      const rating = $rating && +$rating.textContent;
 
-      const votesEl = document.querySelector('[class^="styles_count"]');
-      const votesMatch = votesEl.textContent.match(/\d/g);
+      const $votes = document.querySelector('[class^="styles_count"]');
+      const votesMatch = $votes && $votes.textContent.match(/\d/g);
       const votes = votesMatch && +votesMatch.join('');
 
       const countries = extractArray('Страна');
