@@ -3,6 +3,7 @@
 const _ = require('lodash');
 const { tmdb } = require('../../core/requests');
 const genreRepository = require('../genre/genre.repository');
+const movieRepository = require('./movie.repository');
 
 const transformMovie = async (movie) => _.omit({
   ...movie,
@@ -57,5 +58,9 @@ module.exports.get = async (id) => {
   return tmdb
     .get(`/movie/${id}?append_to_response=credits`)
     .then((response) => response.data)
-    .catch((err) => { }); // ingore error
+    .catch((err) => {}); // ingore error
 };
+
+module.exports.list = async (page, perPage) => {
+  return movieRepository.list(page, perPage);
+}

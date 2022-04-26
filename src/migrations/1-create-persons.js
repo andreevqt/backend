@@ -7,7 +7,7 @@ module.exports.up = (knex) => {
       table.string('name');
       table.string('photo');
       table.string('originalName');
-      table.string('birthDate');
+      table.datetime('birthDate');
       table.string('placeOfBirth');
       table.datetime('lastSync');
     });

@@ -37,6 +37,12 @@ module.exports = {
     next();
   }),
 
+  list: asyncHandler(async (req, res) => {
+    const { page, perPage } = req.query;
+    const result = await movieService.list(page, perPage);
+    res.status(Http.OK).json(result);
+  }),
+
   get: asyncHandler(async (req, res) => {
     const { movie } = res.locals;
     res.status(Http.OK).json(movie);

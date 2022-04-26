@@ -14,10 +14,11 @@
     "seed": "node ./src/index.js seed 100",
     "scrape": "cross-env NODE_ENV=production node ./src/index.js scrape",
     "scrape::debug": "cross-env NODE_ENV=debug node ./src/index.js scrape",
+    "scrape::repair": "cross-env NODE_ENV=debug node ./src/index.js scrape --re",
     "rotate": "node ./src/index.js rotate"
   },
   "keywords": [],
-  "author": "",
+  "author": "qprquo",
   "license": "ISC",
   "dependencies": {
     "@playwright/test": "1.21.1",

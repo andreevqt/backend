@@ -10,7 +10,7 @@ module.exports.up = (knex) => {
       table.integer('votes');
       table.string('type');
       table.integer('year');
-      table.string('slogan');
+      table.text('slogan');
       table.string('poster');
       table.text('description');
       table.string('budget');
@@ -18,7 +18,8 @@ module.exports.up = (knex) => {
       table.string('feesUSA');
       table.string('feesRussia')
       table.string('age');
-      table.string('duration');
+      table.integer('duration');
+      table.datetime('release');
       table.datetime('lastSync');
     });
 };

@@ -26,6 +26,7 @@ program.command('secret')
 
 program.command('scrape')
   .description('scrape kinopoisk')
+  .option('--re', 'rescrape all the movies')
   .action(scrape);
 
 program.command('rotate')

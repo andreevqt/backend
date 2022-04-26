@@ -51,14 +51,14 @@ const extractor = (command) => {
       const $poster = document.querySelector('.film-poster');
       const poster = $poster && !$poster.src.endsWith('placeholder.svg') && $poster.src;
 
-      const type = document.querySelector('[class^="styles_brackets"]') ? 'series' : 'movie';
+      const type = window.location.href.match(/\/series\//) ? 'series' : 'movie';
 
       const year = +extractValue('Год производства');
       const slogan = extractValue('Слоган') || '-';
       const budget = extractValue('Бюджет');
 
       const feesWorld = extractValue('Сборы в мире', (row) => row.querySelector('a').textContent);
-      const feesUSA = extractValue('Сборы в США');
+      const feesUSA = extractValue('Сборы в США').replace('сборы', '');
       const feesRussia = extractValue('Сборы в России');
       const age = extractValue('Возраст', (row) => row.querySelector('span').textContent);
       const duration = extractValue('Время');

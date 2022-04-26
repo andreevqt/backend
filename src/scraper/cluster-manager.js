@@ -4,6 +4,7 @@ const puppeteer = require('puppeteer-extra')
 const { Cluster } = require('puppeteer-cluster');
 const proxyChain = require('proxy-chain');
 const mainTask = require('./tasks/main');
+const repairTask = require('./tasks/repair');
 const config = require('../config');
 const createKnex = require('../core/database');
 const Captcha = require('./captcha');
@@ -53,15 +54,23 @@ class ClusterManager {
 
     this.cluster = await Cluster.launch(clusterConfig);
 
-    const { page } = await this._getState();
-    this.page = page;
+    await this.loadState();
 
     this.cluster.on('taskerror', async (err, data) => {
       logger.error(`error: ${err} ${err.stack}, data: ${data}`);
-      await this._saveState({ page: this.page });
+      await this.saveState();
     });
 
     this._initialized = true;
+  }
+
+  async loadState() {
+    const { page } = await this._getState();
+    this.page = page;
+  }
+
+  async saveState() {
+    await this._saveState({ page: this.page });
   }
 
   async _getState() {
@@ -82,8 +91,8 @@ class ClusterManager {
       .merge();
   }
 
-  async run() {
-    await this.cluster.queue(mainTask(this));
+  async run(task) {
+    await this.cluster.queue(task(this));
     await this.cluster.idle();
     await this.cluster.close();
     await this.knex.destroy();
@@ -92,12 +101,14 @@ class ClusterManager {
       proxyChain.closeAnonymizedProxy(this._newProxyUrl);
     }
   }
+
+  async scrape() {
+    await this.run(mainTask);
+  }
+
+  async repair() {
+    await this.run(repairTask);
+  }
 }
 
-const run = async () => {
-  const manager = new ClusterManager();
-  await manager.init();
-  await manager.run();
-};
-
-module.exports = { run };
+module.exports = ClusterManager;

@@ -5,6 +5,7 @@ const controller = require('./movie.controller');
 const { authorize } = require('../user/user.middleware');
 const validate = require('../../core/middleware/validate');
 const reviewValidator = require('../review/review.validator');
+const movieValidator = require('./movie.validator');
 
 const router = new Router();
 
@@ -13,6 +14,10 @@ module.exports = (app) => {
 
   router
     .param('movieId', controller.checkMovie);
+
+  router
+    .route('/')
+    .get(validate(movieValidator.pagination, 'query'), controller.list);
 
   router
     .route('/featured')
