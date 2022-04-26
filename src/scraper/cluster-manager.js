@@ -3,8 +3,6 @@
 const puppeteer = require('puppeteer-extra')
 const { Cluster } = require('puppeteer-cluster');
 const proxyChain = require('proxy-chain');
-const mainTask = require('./tasks/main');
-const repairTask = require('./tasks/repair');
 const config = require('../config');
 const createKnex = require('../core/database');
 const Captcha = require('./captcha');
@@ -23,6 +21,7 @@ class ClusterManager {
     this.cluster = null;
     this.page = 1;
     this._newProxyUrl = null;
+    this._tasks = [];
   }
 
   async init() {
@@ -58,41 +57,39 @@ class ClusterManager {
 
     this.cluster.on('taskerror', async (err, data) => {
       logger.error(`error: ${err} ${err.stack}, data: ${data}`);
-      await this.saveState();
+      await Promise.all(this._tasks.map((task) => task.saveState()));
     });
 
     this._initialized = true;
   }
 
-  async loadState() {
-    const { page } = await this._getState();
-    this.page = page;
+  async addTask(task) {
+    this._tasks.push(task);
   }
 
-  async saveState() {
-    await this._saveState({ page: this.page });
-  }
-
-  async _getState() {
-    const defaultValue = { page: 1 };
+  async getState(key, defaultValue) {
     const result = await this.knex
       .select('value')
       .from('settings')
-      .where('key', 'scrapper')
+      .where('key', key)
       .first();
     return result ? JSON.parse(result.value) : defaultValue;
   }
 
-  async _saveState(data) {
+  async saveState(key, data) {
     const value = JSON.stringify(data);
     return this.knex('settings')
-      .insert({ key: 'scrapper', value })
+      .insert({ key, value })
       .onConflict('key')
       .merge();
   }
 
-  async run(task) {
-    await this.cluster.queue(task(this));
+  async _main() {
+
+  }
+
+  async run() {
+    await this.cluster.queue(this._main);
     await this.cluster.idle();
     await this.cluster.close();
     await this.knex.destroy();
@@ -100,14 +97,6 @@ class ClusterManager {
     if (this._newProxyUrl) {
       proxyChain.closeAnonymizedProxy(this._newProxyUrl);
     }
-  }
-
-  async scrape() {
-    await this.run(mainTask);
-  }
-
-  async repair() {
-    await this.run(repairTask);
   }
 }
 

@@ -111,7 +111,7 @@ class Captcha {
 
   async _in(src) {
     const body = await this.prepareImage(src);
-    const result = await axios.post(`${this._baseUrl}/in.php`, {
+    return axios.post(`${this._baseUrl}/in.php`, {
       key: this._apiKey,
       method: 'base64',
       language: 1,
@@ -119,8 +119,7 @@ class Captcha {
       body,
       action: 'get',
       json: 1
-    });
-    return result.data;
+    }).then((response) => response.data);
   }
 
   async _res(id) {

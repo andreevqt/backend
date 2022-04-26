@@ -3,16 +3,11 @@
 const chalk = require('chalk');
 const ClusterManager = require('../scraper/cluster-manager');
 
-module.exports = async ({ re }) => {
+module.exports = async () => {
   const clusterManager = new ClusterManager();
-
   try {
     await clusterManager.init();
-    if (re) {
-      await clusterManager.repair();
-    } else {
-      await clusterManager.scrape();
-    }
+    await clusterManager.run();
   } catch (err) {
     console.log(chalk.red(err));
   }
