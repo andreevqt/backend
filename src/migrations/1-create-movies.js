@@ -19,6 +19,7 @@ module.exports.up = (knex) => {
       table.string('feesRussia')
       table.string('age');
       table.integer('duration');
+      table.integer('top250');
       table.datetime('release');
       table.datetime('lastSync');
     });

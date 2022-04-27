@@ -7,6 +7,7 @@ const config = require('../config');
 const createKnex = require('../core/database');
 const Captcha = require('./captcha');
 const logger = require('../logger');
+const MainTask = require('./tasks/main-task');
 
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 puppeteer.use(StealthPlugin());
@@ -22,6 +23,8 @@ class ClusterManager {
     this.page = 1;
     this._newProxyUrl = null;
     this._tasks = [];
+    this._main = this._main.bind(this);
+    this._saveAll = this._saveAll.bind(this);
   }
 
   async init() {
@@ -53,18 +56,28 @@ class ClusterManager {
 
     this.cluster = await Cluster.launch(clusterConfig);
 
-    await this.loadState();
-
     this.cluster.on('taskerror', async (err, data) => {
-      logger.error(`error: ${err} ${err.stack}, data: ${data}`);
-      await Promise.all(this._tasks.map((task) => task.saveState()));
+      logger.error(`Error: ${err} ${err.stack}, data: ${data}`);
+      await this._saveAll();
     });
 
     this._initialized = true;
   }
 
+  async _saveAll() {
+    return Promise.all(this._tasks.map((task) => task.saveState()));
+  }
+
+  async _loadAll() {
+    return Promise.all(this._tasks.map((task) => task.loadState()));
+  }
+
   async addTask(task) {
     this._tasks.push(task);
+  }
+
+  async execute(data, task) {
+    return this.cluster.execute(data, task);
   }
 
   async getState(key, defaultValue) {
@@ -84,8 +97,12 @@ class ClusterManager {
       .merge();
   }
 
-  async _main() {
+  async _main({ page }) {
+    const mainTask = new MainTask(this, page);
+    this.addTask(mainTask);
 
+    await this._loadAll();
+    await mainTask.run();
   }
 
   async run() {

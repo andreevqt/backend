@@ -36,6 +36,26 @@ const extractor = (command) => {
     return +id.match(/\/(\d+)\/$/)[1];
   };
 
+  const extractDate = (date) => {
+    const map = {
+      'января': '00',
+      'февраля': '01',
+      'марта': '02',
+      'апреля': '03',
+      'мая': '04',
+      'июня': '05',
+      'июля': '06',
+      'августа': '07',
+      'сентября': '08',
+      'октября': '09',
+      'ноября': '10',
+      'декабря': '11'
+    };
+
+    const [, day, month, year] = date.match(/^(\d+)\s(.+)\s(\d+)$/);
+    return `${year.padStart(4, 0)}-${map[month]}-${day.padStart(2, 0)} 00:00:00`;
+  };
+
   switch (command) {
     case 'EXTRACT_MOVIE': {
       const id = getId();
@@ -58,10 +78,12 @@ const extractor = (command) => {
       const budget = extractValue('Бюджет');
 
       const feesWorld = extractValue('Сборы в мире', (row) => row.querySelector('a').textContent);
-      const feesUSA = extractValue('Сборы в США').replace('сборы', '');
+      const $feesUSA = extractValue('Сборы в США');
+      const feesUSA = $feesUSA && $feesUSA.replace('сборы', '');
       const feesRussia = extractValue('Сборы в России');
       const age = extractValue('Возраст', (row) => row.querySelector('span').textContent);
-      const duration = extractValue('Время');
+      const $duration = extractValue('Время');
+      const duration = $duration && +$duration.match(/^\d+/)[0];
 
       const $rating = document.querySelector('.film-rating-value');
       const rating = $rating && +$rating.textContent;
@@ -72,6 +94,14 @@ const extractor = (command) => {
 
       const countries = extractArray('Страна');
       const genres = extractArray('Жанр');
+
+      // top 250
+      const $top250container = document.querySelector('[class^="styles_topListPositionBadge"]');
+      const top250 = $top250container && +$top250container.querySelector('[class*="styles_position"]').textContent.match(/\d+/)[0];
+
+      // release
+      const $release = extractArray('Премьера в мире');
+      const release = $release && extractDate($release[0]);
 
       const movie = {
         id,
@@ -89,7 +119,9 @@ const extractor = (command) => {
         age,
         duration,
         slogan,
-        budget
+        budget,
+        release,
+        top250
       };
 
       return {

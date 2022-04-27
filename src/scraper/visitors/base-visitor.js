@@ -1,15 +1,14 @@
 'use strict';
 
 const logger = require('../../logger');
-const rejectIfTimeout = require('../reject-if-timeout');
 
 class Visitor {
-  constructor({ name, baseURL, task }) {
+  constructor(name, baseURL, task) {
     this._name = name;
     this._baseURL = baseURL;
     this._task = task;
     this._currentPage = 1;
-    this._totalPages = 0;
+    this._totalPages = 1;
   }
 
   getState() {
@@ -19,7 +18,13 @@ class Visitor {
     };
   }
 
-  setState({ currentPage, totalPages }) {
+  setState(state) {
+    if (!state) {
+      return;
+    }
+
+    const { currentPage, totalPages } = state;
+
     this._currentPage = currentPage;
     this._totalPages = totalPages;
   }
@@ -33,21 +38,19 @@ class Visitor {
   }
 
   async goto(url) {
-    await timeout();
-    this._task.goto(url);
-    await this._task.handleCaptcha();
+    return this._task.goto(url);
   }
 
   async visit(processLink = new Promise) {
-    logger.info(`${this.name} scraping data...`);
+    logger.info(`${this._name} scraping data...`);
     await this.goto(this._baseURL);
 
     // extract lastPage
-    const lastPage = await this.getLastPage();
-    logger.info(`Total pages - ${lastPage}`);
+    this._totalPages = await this.getLastPage();
+    logger.info(`Total pages - ${this._totalPages}`);
 
     // iterate over all pages
-    for (; this._currentPage <= lastPage; this._currentPage++) {
+    for (; this._currentPage <= this._totalPages; this._currentPage++) {
       logger.info(`Scraping page ${this._currentPage}`);
       await this.goto(`${this._baseURL}?page=${this._currentPage}`);
       const links = await this.getLinks();
@@ -62,6 +65,8 @@ class Visitor {
       // wait for first tasks
       await Promise.all(tasks);
     };
+
+    logger.info(`${this._name} done!!!`);
   }
 }
 

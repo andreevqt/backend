@@ -3,6 +3,15 @@
 const BaseTable = require('./base-table');
 
 class MovieTable extends BaseTable {
+  async isExists(id) {
+    const movie = await this._knex.select('*')
+      .from('countries')
+      .where('id', id)
+      .first();
+
+    return !!movie;
+  }
+
   async _addCountry(movieId, countryName) {
     const country = await this._knex.select('*')
       .from('countries')
