@@ -1,7 +1,6 @@
 'use strict';
 
-const puppeteer = require('puppeteer-extra')
-const { Cluster } = require('puppeteer-cluster');
+const cluster = require('./cluster/cluster');
 const proxyChain = require('proxy-chain');
 const config = require('../config');
 const createKnex = require('../core/database');
@@ -9,10 +8,6 @@ const Captcha = require('./captcha');
 const logger = require('../logger');
 const MainTask = require('./tasks/main-task');
 
-const StealthPlugin = require('puppeteer-extra-plugin-stealth');
-puppeteer.use(StealthPlugin());
-
-const TIMEOUT = 1800000;
 
 class ClusterManager {
   constructor() {
@@ -43,23 +38,18 @@ class ClusterManager {
     }
 
     const clusterConfig = {
-      concurrency: Cluster.CONCURRENCY_PAGE,
-      maxConcurrency: config.get('scraper.maxConcurrency'),
-      monitor: false,
-      timeout: TIMEOUT,
       puppeteerOptions: {
         headless: config.get('scraper.headless'),
         args
-      },
-      puppeteer
+      }
     };
 
-    this.cluster = await Cluster.launch(clusterConfig);
+    this.cluster = await cluster.launch(clusterConfig);
 
-    this.cluster.on('taskerror', async (err, data) => {
+    /* this.cluster.on('taskerror', async (err, data) => {
       logger.error(`Error: ${err} ${err.stack}, data: ${data}`);
       await this._saveAll();
-    });
+    }); */
 
     this._initialized = true;
   }
@@ -106,8 +96,8 @@ class ClusterManager {
   }
 
   async run() {
-    await this.cluster.queue(this._main);
-    await this.cluster.idle();
+    await this.cluster.enqueue(null, this._main);
+    await this.cluster.run();
     await this.cluster.close();
     await this.knex.destroy();
 

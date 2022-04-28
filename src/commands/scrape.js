@@ -9,6 +9,6 @@ module.exports = async () => {
     await clusterManager.init();
     await clusterManager.run();
   } catch (err) {
-    console.log(chalk.red(err));
+    console.log(err, err.stack);
   }
 };
